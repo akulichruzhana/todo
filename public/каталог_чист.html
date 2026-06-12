@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Каталог</title>
+  <meta name="description" content="Каталог туров по Беларуси от турагентства Вандралюбы. Откройте настоящую Беларусь с нашими турами!">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<style>
+    :root {
+      --primary: hsl(33, 43%, 54%);
+      --primary-light: hsl(33, 38%, 60%);
+      --bg: hsl(0, 0%, 100%);
+      --text: hsl(0, 0%, 13%);
+      --text-muted: hsl(0, 0%, 40%);
+      --border: hsl(30, 15%, 85%);
+      --muted-bg: hsl(30, 10%, 94%);
+      --dark-bg: hsl(0, 0%, 15%);
+      --dark-text: hsl(0, 0%, 80%);
+      --vip-bg: hsl(0, 0%, 96%);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+    h1, h2, h3, h4 {
+      font-family: 'PT Serif', serif;
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      padding: 20px 0;
+    }
+    .header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin-left: 200px; /*отступ лого от края в шапке*/
+      text-decoration: none;
+    }
+    
+    .logo-circle {
+      width: 40px; height: 40px;
+      border: 2px solid var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      margin-left: 15px;
+     
+    }
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .logo-title {
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 3px;
+      font-family: PT Serif;
+    }
+    .logo-sub {
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+    .nav a {
+      color: rgba(229, 227, 227, 0.9);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav a:hover, .nav a.active {
+      color: white;
+    }
+    .nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0; right: 0;
+      height: 2px;
+      background: var(--primary);
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .phone-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 50px;
+      padding: 8px 20px;
+      color: white;
+      text-decoration: none;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+    .phone-btn:hover { background: rgba(255,255,255,0.1); }
+    .phone-btn svg { width: 14px; height: 14px; }
+    .arrow-btn {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      background: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-right: 170px; /*отступ стрелки от края в шапке*/
+    }
+    .arrow-btn:hover { background: rgba(255,255,255,0.1); }
+    .arrow-btn svg { width: 16px; height: 16px;}
+    
+    /* ===== HERO ===== */
+    .hero {
+      position: relative;
+      height: 800px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      color: white;
+    }
+    .hero-content h1 {
+      font-size: 56px;
+      font-weight: 700;
+      margin-bottom: 0px;
+    }
+    .hero-content p {
+      font-size: 17px;
+      opacity: 0.9;
+    }
+    /* ===== TOURS SECTION ===== */
+    .tours-section {
+      padding: 60px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .tours-section h2 {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 40px;
+    }
+    /* Main grid: complex asymmetric layout matching design */
+    .tours-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    /* First row: pushcha (tall, spans 2 rows), grodno, polesie */
+    .tour-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 5px;
+      cursor: pointer;
+      min-height: 220px;
+    }
+    .tour-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      inset: 0;
+      transition: transform 0.5s;
+    }
+    .tour-card:hover img {
+      transform: scale(1.05);
+    }
+    .tour-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
+    }
+    .tour-card-content {
+      position: relative;
+      z-index: 2;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      height: 100%;
+    }
+    .tour-card-label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 3;
+      text-shadow: 5px 5px 6px #141313;
+    }
+    .tour-card-label h3 {
+      color: white;
+      font-family: 'PT Serif', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.3;
+      max-width: 200px;
+    }
+    .tour-card-label .tour-route {
+      color: white;
+      font-size: 11px;
+      margin-top: 2px;
+     text-shadow: 5px 5px 6px #141313;
+     
+    }
+    .tour-card-label .tour-duration {
+      color: white;
+      font-size: 11px;
+      margin-top: 2px;
+      text-shadow: 5px 5px 6px #141313;
+    }
+    .tour-card-price {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      z-index: 3;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    /* Tall card spanning 2 rows */
+    .tour-tall {
+      grid-row: span 2;
+      min-height: 460px;
+    }
+    /* Wide cheese card */
+    .tour-wide {
+      grid-column: span 3;
+      min-height: 280px;
+    }
+    /* Second row grid */
+    .tours-grid-row2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    /* ===== VIP SECTION ===== */
+    .vip-section {
+      background: #1e1e1e;
+      padding: 60px 40px;
+    }
+    .vip-section h2 {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 40px;
+      color: white;
+    }
+    .vip-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .vip-card {
+      background: white;
+      border-radius: 5px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .vip-card-text {
+      padding: 20px;
+      flex: 1;
+    }
+    .vip-card-text h3 {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .vip-card-text p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .vip-card-text .duration {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .vip-card-img {
+      height: 220px;
+      overflow: hidden;
+    }
+    .vip-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .vip-note {
+      text-align: center;
+      font-size: 14px;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-top: 30px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    /* ===== CONTACT ===== */
+    .contact-section {
+      padding: 60px 40px;
+      background: var(--muted-bg);
+    }
+    .contact-inner {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .contact-section h2 {
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .form-row input,
+    .contact-section textarea {
+      width: 100%;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-family: 'Source Sans 3', sans-serif;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-row input:focus,
+    .contact-section textarea:focus {
+      border-color: var(--primary);
+    }
+    .contact-section textarea {
+      resize: none;
+      margin-bottom: 10px;
+    }
+    .form-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .submit-btn {
+      background: var(--text);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 40px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: Roboto;
+      transition: opacity 0.2s;
+    }
+    .submit-btn:hover { opacity: 0.85; }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .checkbox-label input {
+      width: 16px;
+      height: 16px;
+    }
+    .checkbox-label span {
+      text-decoration: underline;
+    }
+    /* ===== FOOTER ===== */
+    .footer {
+      background: var(--dark-bg);
+      color: var(--dark-text);
+      padding: 50px 40px;
+    }
+    .footer-logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+      
+    }
+    .footer-logo-inner {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .footer-logo-circle {
+      width: 48px; height: 48px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      color: var(--dark-text);
+    }
+    .footer-logo-text {
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 2px;
+      font-family: PT Serif;
+    }
+    .footer-logo-sub {
+      font-size: 11px;
+      opacity: 0.6;
+    }
+    .footer-cols {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+    }
+    .footer-cols strong {
+      color: var(--dark-text);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .footer-cols a {
+      color: rgba(255,255,255,0.5);
+    }
+    .footer-cols a:hover {
+      color: var(--dark-text);
+    }
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .header { padding: 16px 20px; }
+      .nav, .header-right { display: none; }
+      .hero-content h1 { font-size: 36px; }
+      .tours-section { padding: 40px 20px; }
+      .tours-grid { grid-template-columns: 1fr; }
+      .tour-tall { grid-row: span 1; min-height: 280px; }
+      .tour-wide { grid-column: span 1; }
+      .tours-grid-row2 { grid-template-columns: 1fr; }
+      .vip-section { padding: 40px 20px; }
+      .vip-grid { grid-template-columns: 1fr; }
+      .contact-section { padding: 40px 20px; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-bottom { flex-direction: column; align-items: flex-start; }
+      .footer { padding: 40px 20px; }
+      .footer-cols { grid-template-columns: 1fr; gap: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+ <!-- HEADER -->
+  <header class="header">
+    <div class="container">
+      <a href="#" class="logo">
+        <div ><img src="лого.png" width="40px" height="35px" alt="logo"></div>
+        <div class="logo-text">
+          <div class="logo-title">ВАНДРАЛЮБЫ</div>
+          <div class="logo-sub">Турагентство</div>
+        </div>
+      </a>
+      <nav class="nav">
+        <a href="глав_чист.html">Главная</a>
+        <a href="о нас_чист.html">Вандралюбы</a>
+        <a href="#" class="active">Каталог</a>
+        <a href="туристам_чист.html">Туристам</a>
+        <a href="контакты_чист.html">Контакты</a>
+      </nav>
+      <div class="header-right">
+        <a href="tel:+375292451770" class="phone-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          тел. +375 29 245 17 70
+        </a>
+        <a href="регистрация_чист.html">
+        <button class="arrow-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button></a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <img src="лошади в поле.jpg" alt="Лошади в поле Беларуси">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Каталог</h1>
+      <p>Откройте настоящую Беларусь с нашими турами!</p>
+    </div>
+  </section>
+
+  <!-- TOURS -->
+  <section class="tours-section">
+    <h2>Ближайшие планируемые туры</h2>
+    <!-- Main grid: 3 columns, pushcha is tall spanning 2 rows -->
+    <div class="tours-grid">
+      <!-- Беловежская пуща — tall card -->
+      <div class="tour-card tour-tall">
+        <img src="беловежа.jpg" alt="Беловежская пуща">
+        <div class="tour-card-overlay"></div>
+        <div class="tour-card-label">
+          <h3>Беловежская пуща и ее соседи</h3>
+          <div class="tour-route">Барановичи – Беловежская пуща – Скидель</div>
+          <div class="tour-duration">2 дня / 1 ночь</div>
+        </div>
+        <div class="tour-card-price">от 550 BYN</div>
+      </div>
+      <!-- Классика Гродно -->
+      <div class="tour-card">
+        <img src="гродно.jpg" alt="Гродно">
+        <div class="tour-card-overlay"></div>
+        <div class="tour-card-label">
+          <h3>Классика Гродно: замки и аптеки</h3>
+          <div class="tour-route">Гродно – Августовский канал – Жировичский монастырь</div>
+          <div class="tour-duration">2 дня / 1 ночь</div>
+        </div>
+        <div class="tour-card-price">от 410 BYN</div>
+      </div>
+      <!-- Полесье -->
+      <div class="tour-card">
+        <img src="полесье.jpg" alt="Полесье">
+        <div class="tour-card-overlay"></div>
+        <div class="tour-card-label">
+          <h3>Полесье: дремлющие болота</h3>
+          <div class="tour-route">Пинск – Туров – сплав по Припяти и ночёвка на острове</div>
+          <div class="tour-duration">3 дня / 2 ночи</div>
+        </div>
+        <div class="tour-card-price">от 620 BYN</div>
+      </div>
+      <!-- Гранитный каньон -->
+      <div class="tour-card">
+        <img src="гранит.jpeg" alt="Гранитный каньон">
+        <div class="tour-card-overlay"></div>
+        <div class="tour-card-label">
+          <h3>Гранитный каньон: Водопады</h3>
+          <div class="tour-route">Новополоцк: тур на целое разнообразие</div>
+          <div class="tour-duration">2 дня / 1 ночь</div>
+        </div>
+        <div class="tour-card-price">от 520 BYN</div>
+      </div>
+      <!-- Белорусские мальдивы -->
+      <div class="tour-card">
+        <img src="меловые карьеры.jpg" alt="Белорусские мальдивы">
+        <div class="tour-card-overlay"></div>
+        <div class="tour-card-label">
+          <h3>Белорусские мальдивы</h3>
+          <div class="tour-route">Меловые карьеры под Волковыском</div>
+          <div class="tour-duration">1 день/без ночёвки (авт.)</div>
+        </div>
+        <div class="tour-card-price">от 190 BYN</div>
+      </div>
+    </div>
+    <!-- Wide cheese card -->
+    <div class="tour-card tour-wide" style="margin-bottom: 0;">
+      <img src="сыр.jpg" alt="Сырная история">
+      <div class="tour-card-overlay"></div>
+      <div class="tour-card-label">
+        <h3 style="font-size: 18px; max-width: 400px;">Сырная история: крафтовые сыры в Беларуси</h3>
+        <div class="tour-route">Полочаны – Гервяты – Нарочь: путешествие за вкусом</div>
+        <div class="tour-duration">2 дня / 1 ночь</div>
+      </div>
+      <div class="tour-card-price">от 650 BYN</div>
+    </div>
+  </section>
+  <!-- VIP SECTION -->
+  <section class="vip-section">
+    <h2>Топ 3 VIP-экскурсии</h2>
+    <div class="vip-grid">
+      <!-- Гастрономическое -->
+      <div class="vip-card">
+        <div class="vip-card-text">
+          <h3>Гастрономическое путешествие вкусов и традиций</h3>
+          <p>Беларусь может удивить изысканной кухней. Этот тур создан для тех, кто ценит редкие продукты, авторскую подачу и аутентичные рецепты в самом роскошном исполнении.</p>
+          <div class="duration">3 дня / 2 ночи</div>
+        </div>
+        <div class="vip-card-img">
+          <img src="бел блюдо.jpg" alt="Гастрономический тур">
+        </div>
+      </div>
+      <!-- Княжеский -->
+      <div class="vip-card">
+        <div class="vip-card-text">
+          <h3>Княжеский прием: замки и усадьбы</h3>
+          <p>Это путешествие перенесёт вас в эпоху Радзивиллов, Сапегов и Тышкевичей. Вы будете жить в замках, обедать во дворцах, прикасаться к истории, которую показывают в музеях.</p>
+          <div class="duration">4 дня / 3 ночи</div>
+        </div>
+        <div class="vip-card-img">
+          <img src="несвижский замок.jpg" alt="Княжеский прием">
+        </div>
+      </div>
+      <!-- Энергия земли -->
+      <div class="vip-card">
+        <div class="vip-card-text">
+          <h3>Энергия земли. Эксклюзивный ретрит в местах силы</h3>
+          <p>Для тех, кто ищет не просто путешествие, а глубокую трансформацию. Мы соберём для вас индивидуальный маршрут по сакральным местам Беларуси, где всё может измениться, а энергия земли перезарядит изнутри.</p>
+          <div class="duration">3 дня / 2 ночи</div>
+        </div>
+        <div class="vip-card-img">
+          <img src="ретрит хутор.jpg" alt="Энергия земли">
+        </div>
+      </div>
+    </div>
+    <p class="vip-note">Стоимость тура рассчитывается индивидуально*</p>
+  </section>
+  <!-- CONTACT -->
+  <section class="contact-section" id="contact">
+    <div class="contact-inner">
+      <h2>Забронируйте отдых с "Вандралюбами"</h2>
+      <form onsubmit="event.preventDefault()">
+        <div class="form-row">
+          <input type="text" placeholder="Ваше имя">
+          <input type="tel" placeholder="Телефон">
+          <input type="email" placeholder="E-mail">
+        </div>
+        <textarea rows="4" placeholder="Комментарий"></textarea>
+        <div class="form-bottom">
+          <button type="submit" class="submit-btn">Отправить заявку</button>
+          <label class="checkbox-label">
+            <input type="checkbox">
+            <span>Согласие на обработку персональных данных</span>
+          </label>
+        </div>
+      </form>
+    </div>
+  </section>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-logo">
+      <div class="footer-logo-inner">
+         <div><img src="лого.png" width="40px" height="35px" alt="logo"></div>
+        <div>
+          <div class="footer-logo-text">Вандралюбы</div>
+          <div class="footer-logo-sub">Турагентство</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <strong>ЧУП "Вандралюбы"</strong>
+        <p>© 2026. Все права защищены</p>
+        <a href="#">Политика конфиденциальности</a>
+      </div>
+      <div>
+        <strong>Адрес:</strong>
+        <p>г. Минск, ул. Ленина, 15</p>
+        <p>г. Минск, ул. Ратомская, 7</p>
+      </div>
+      <div>
+        <strong>Заказ туров и бронирование:</strong>
+        <p>тел. +375 29 245 17 70</p>
+        <p>e-mail: vandraluby@gmail.com</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
