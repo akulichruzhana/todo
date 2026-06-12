@@ -716,27 +716,30 @@
       </div>
     </div>
   </section>
+  
   <!-- CONTACT -->
-  <section class="contact" id="contact">
-    <div class="container">
-      <h2>Забронируйте отдых с "Вандралюбами"</h2>
-      <form class="contact-form" onsubmit="event.preventDefault()">
-        <div class="form-row">
-          <input type="text" placeholder="Ваше имя">
-          <input type="tel" placeholder="Телефон">
-          <input type="email" placeholder="E-mail">
-        </div>
-        <textarea rows="4" placeholder="Комментарий"></textarea>
-        <div class="form-actions">
-          <button type="submit" class="submit-btn">Отправить заявку</button>
-          <label class="consent">
-            <input type="checkbox">
-            <span>Согласие на обработку персональных данных</span>
-          </label>
-        </div>
-      </form>
-    </div>
-  </section>
+<section class="contact" id="contact">
+  <div class="container">
+    <h2>Забронируйте отдых с "Вандралюбами"</h2>
+    <form class="contact-form" id="bookingForm">
+      <div class="form-row">
+        <input type="text" id="userName" placeholder="Ваше имя" required>
+        <input type="tel" id="userPhone" placeholder="Телефон" required>
+        <input type="email" id="userEmail" placeholder="E-mail" required>
+      </div>
+      <textarea rows="4" id="userComment" placeholder="Комментарий"></textarea>
+      <div class="form-actions">
+        <button type="submit" class="submit-btn" id="submitBtn">Отправить заявку</button>
+        <label class="consent">
+          <input type="checkbox" id="consentCheckbox" required>
+          <span>Согласие на обработку персональных данных</span>
+        </label>
+      </div>
+      <div id="formMessage" style="margin-top: 15px; display: none;"></div>
+    </form>
+  </div>
+</section>
+  
   <!-- FOOTER -->
   <footer class="footer">
     <div class="container">
@@ -768,5 +771,101 @@
       </div>
     </div>
   </footer>
+  
+  <script>
+// Функция для отправки бронирования
+async function submitBooking(event) {
+  event.preventDefault();
+  
+  const name = document.getElementById('userName').value.trim();
+  const phone = document.getElementById('userPhone').value.trim();
+  const email = document.getElementById('userEmail').value.trim();
+  const comment = document.getElementById('userComment').value.trim();
+  const consent = document.getElementById('consentCheckbox').checked;
+  const submitBtn = document.getElementById('submitBtn');
+  const formMessage = document.getElementById('formMessage');
+  
+  // Проверка согласия
+  if (!consent) {
+    formMessage.style.display = 'block';
+    formMessage.style.color = 'red';
+    formMessage.textContent = 'Пожалуйста, дайте согласие на обработку персональных данных';
+    return;
+  }
+  
+  // Проверка обязательных полей
+  if (!name || !phone || !email) {
+    formMessage.style.display = 'block';
+    formMessage.style.color = 'red';
+    formMessage.textContent = 'Пожалуйста, заполните имя, телефон и email';
+    return;
+  }
+  
+  // Блокируем кнопку и показываем загрузку
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Отправка...';
+  formMessage.style.display = 'block';
+  formMessage.style.color = '#666';
+  formMessage.textContent = 'Отправляем заявку...';
+  
+  // Получаем выбранную дату из календаря
+  let tourDate = null;
+  if (selectedDate) {
+    tourDate = selectedDate.toISOString().split('T')[0];
+  }
+  
+  try {
+    const response = await fetch('/api/booking', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: name,
+        phone: phone,
+        email: email,
+        tourDate: tourDate,
+        comment: comment
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      formMessage.style.color = 'green';
+      formMessage.textContent = result.message;
+      document.getElementById('bookingForm').reset();
+      clearSelection(); // Очищаем выбранную дату в календаре
+    } else {
+      formMessage.style.color = 'red';
+      formMessage.textContent = result.error;
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    formMessage.style.color = 'red';
+    formMessage.textContent = 'Ошибка соединения. Пожалуйста, попробуйте позже.';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Отправить заявку';
+  }
+}
+
+// Обновляем функцию confirmSelection для календаря
+const originalConfirmSelection = confirmSelection;
+confirmSelection = function() {
+  if (selectedDate) {
+    const formattedDate = selectedDate.toLocaleDateString('ru-RU');
+    alert('Выбрана дата: ' + formattedDate + '\n\nТеперь заполните форму бронирования ниже и нажмите "Отправить заявку"');
+    
+    // Прокручиваем к форме
+    document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth' });
+  } else {
+    alert('Пожалуйста, выберите дату тура в календаре');
+  }
+}
+
+// Назначаем обработчик на форму
+document.getElementById('bookingForm').addEventListener('submit', submitBooking);
+</script>
 </body>
 </html>
