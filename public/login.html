@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход — Вандралюбы</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: hsl(33, 38%, 49%);
+      --primary-hover: hsl(33, 38%, 42%);
+      --foreground: hsl(0, 0%, 13%);
+      --muted: hsl(0, 0%, 40%);
+      --border: hsl(30, 15%, 85%);
+      --bg: hsl(0, 0%, 100%);
+      --footer-bg: hsl(0, 0%, 15%);
+      --footer-fg: hsl(0, 0%, 80%);
+      --font-display: 'PT Serif', serif;
+      --font-body: 'Roboto', sans-serif;
+    }
+    body {
+      font-family: var(--font-body);
+      color: var(--foreground);
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* ===== HEADER / LOGO ===== */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px 0;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      text-decoration: none;
+    }
+    
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .logo-text .name {
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--foreground);
+      font-family: var(--font-display);
+    }
+    .logo-text .sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    /* ===== MAIN CONTENT ===== */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 24px 80px;
+    }
+    .main h1 {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .register-link {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .register-link a {
+      color: var(--muted);
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+    .register-link a:hover {
+      color: var(--foreground);
+    }
+    /* ===== FORM ===== */
+    .login-form {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .login-form input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      font-size: 15px;
+      font-family: var(--font-body);
+      color: var(--foreground);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .login-form input::placeholder {
+      color: hsl(0, 0%, 55%);
+    }
+    .login-form input:focus {
+      border-color: var(--primary);
+    }
+    /* Password wrapper with toggle */
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    .password-wrapper input {
+      width: 100%;
+      padding-right: 50px;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 14px;
+      user-select: none;
+    }
+    .toggle-password:hover {
+      color: var(--foreground);
+    }
+    /* Forgot password */
+    .forgot-link {
+      text-align: right;
+      margin-top: -8px;
+    }
+    .forgot-link a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+    .forgot-link a:hover {
+      color: var(--primary);
+    }
+    /* Submit */
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 8px;
+    }
+    .submit-btn:hover {
+      background: var(--primary-hover);
+    }
+    /* Message */
+    .form-message {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 8px;
+      display: none;
+    }
+    .form-message.error {
+      color: #d32f2f;
+    }
+    .form-message.success {
+      color: #2e7d32;
+    }
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--footer-bg);
+      color: var(--footer-fg);
+      padding: 60px 24px;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      margin-bottom: 40px;
+    }
+    .footer-logo .name {
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: var(--footer-fg);
+    }
+    .footer-logo .sub {
+      font-size: 12px;
+      color: hsl(0, 0%, 55%);
+    }
+    .footer-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 32px;
+      font-size: 14px;
+      color: hsl(0, 0%, 55%);
+    }
+    .footer-cols .col-title {
+      color: var(--footer-fg);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .footer-cols a {
+      color: hsl(0, 0%, 55%);
+      text-decoration: underline;
+    }
+    .footer-cols a:hover {
+      color: var(--footer-fg);
+    }
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .main h1 { font-size: 32px; }
+      .footer-cols { grid-template-columns: 1fr; gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <div><img src="black_logo.png" width="40px" height="35px" alt="logo"></div>
+      <div class="logo-text">
+        <span class="name">ВАНДРАЛЮБЫ</span>
+        <span class="sub">Турагентство</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <main class="main">
+    <h1>Войти в аккаунт</h1>
+    <p class="register-link">Нет аккаунта? <a href="registration.html">Зарегистрироваться</a></p>
+    
+    <form class="login-form" id="loginForm" onsubmit="event.preventDefault()">
+      <input type="email" id="loginEmail" placeholder="Email" required>
+      
+      <div class="password-wrapper">
+        <input type="password" id="loginPassword" placeholder="Пароль" required>
+        <span class="toggle-password" onclick="togglePassword()">👁</span>
+      </div>
+      
+      <div class="forgot-link">
+        <a href="#">Забыли пароль?</a>
+      </div>
+      
+      <button type="submit" class="submit-btn" id="submitBtn">Войти</button>
+      <div id="formMessage" class="form-message"></div>
+    </form>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <div><img src="logo.png" width="40px" height="35px" alt="logo"></div>
+        <div class="logo-text">
+          <span class="name">Вандралюбы</span>
+          <span class="sub">Турагентство</span>
+        </div>
+      </div>
+      <div class="footer-cols">
+        <div>
+          <p class="col-title">ЧУП «Вандралюбы»</p>
+          <p>© 2026. Все права защищены</p>
+          <a href="#">Политика конфиденциальности</a>
+        </div>
+        <div>
+          <p class="col-title">Адрес:</p>
+          <p>г. Минск, ул. Ленина, 15</p>
+          <p>г. Минск, ул. Ратомская, 7</p>
+        </div>
+        <div>
+          <p class="col-title">Заказ туров и бронирование:</p>
+          <p>тел. +375 29 245 17 70</p>
+          <p>e-mail: vandraluby@gmail.com</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Показать/скрыть пароль
+    function togglePassword() {
+      const passwordInput = document.getElementById('loginPassword');
+      const toggleBtn = document.querySelector('.toggle-password');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleBtn.textContent = '🙈';
+      } else {
+        passwordInput.type = 'password';
+        toggleBtn.textContent = '👁';
+      }
+    }
+
+    // Отправка формы входа
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const submitBtn = document.getElementById('submitBtn');
+      const formMessage = document.getElementById('formMessage');
+      
+      // Валидация
+      if (!email || !password) {
+        formMessage.style.display = 'block';
+        formMessage.className = 'form-message error';
+        formMessage.textContent = 'Пожалуйста, заполните email и пароль';
+        return;
+      }
+      
+      // Блокируем кнопку
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Вход...';
+      formMessage.style.display = 'block';
+      formMessage.className = 'form-message';
+      formMessage.textContent = 'Проверяем данные...';
+      
+      try {
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          formMessage.className = 'form-message success';
+          formMessage.textContent = 'Вход выполнен! Перенаправление...';
+          
+          // Сохраняем данные пользователя (например, в localStorage)
+          if (result.user) {
+            localStorage.setItem('user', JSON.stringify(result.user));
+          }
+          
+          // Перенаправляем на главную страницу через 1 секунду
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1000);
+        } else {
+          formMessage.className = 'form-message error';
+          formMessage.textContent = result.error || 'Ошибка входа. Проверьте email и пароль';
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        formMessage.className = 'form-message error';
+        formMessage.textContent = 'Ошибка соединения. Попробуйте позже.';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Войти';
+      }
+    });
+  </script>
+</body>
+</html>
