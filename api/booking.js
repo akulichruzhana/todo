@@ -1,43 +1,49 @@
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL,
-  ssl: false,  // Отключаем SSL полностью
+  connectionString: process.env.VANDRA_POSTGRES_URL,
+  ssl: { rejectUnauthorized: false }
 });
 
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  
+  // Разрешаем только POST запросы
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const { name, phone, email, tourDate, comment } = req.body;
 
-  if (!name || !phone || !email) {
+  // Валидация
+  if (!name  !phone  !email) {
     return res.status(400).json({ 
       success: false, 
       error: 'Пожалуйста, заполните имя, телефон и email' 
     });
   }
 
+  if (!tourDate) {
+    return res.status(400).json({ 
+      success: false, 
+      error: 'Пожалуйста, выберите дату тура' 
+    });
+  }
+
   try {
-    const result = await pool.query(
+    await pool.query(
       `INSERT INTO bookings (name, phone, email, tour_date, comment, created_at, status) 
-       VALUES ($1, $2, $3, $4, $5, NOW(), 'new') 
-       RETURNING id`,
-      [name, phone, email, tourDate || null, comment || null]
+       VALUES ($1, $2, $3, $4, $5, NOW(), 'new')`,
+      [name, phone, email, tourDate, comment || null]
     );
-    
+
     res.status(200).json({ 
       success: true, 
-      message: 'Заявка успешно отправлена!' 
+      message: 'Заявка на тур успешно отправлена! Мы свяжемся с вами в ближайшее время.' 
     });
   } catch (err) {
-    console.error('Database error:', err);
+    console.error('Booking error:', err);
     res.status(500).json({ 
       success: false, 
-      error: 'Ошибка: ' + err.message 
+      error: 'Ошибка сервера. Пожалуйста, попробуйте позже или свяжитесь с нами по телефону.' 
     });
   }
 };
