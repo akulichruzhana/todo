@@ -168,6 +168,10 @@
     .submit-btn:hover {
       background: var(--primary-hover);
     }
+    .submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
     /* Message */
     .form-message {
       text-align: center;
@@ -272,7 +276,7 @@
     <h1>Войти в аккаунт</h1>
     <p class="register-link">Нет аккаунта? <a href="registration.html">Зарегистрироваться</a></p>
     
-    <form class="login-form" id="loginForm" onsubmit="event.preventDefault()">
+    <form class="login-form" id="loginForm">
       <input type="email" id="loginEmail" placeholder="Email" required>
       
       <div class="password-wrapper">
@@ -336,9 +340,9 @@
       }
     }
 
-    // Отправка формы входа
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
+    // Функция для входа в аккаунт
+    async function submitLogin(event) {
+      event.preventDefault();
       
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
@@ -350,6 +354,15 @@
         formMessage.style.display = 'block';
         formMessage.className = 'form-message error';
         formMessage.textContent = 'Пожалуйста, заполните email и пароль';
+        return;
+      }
+      
+      // Валидация email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        formMessage.style.display = 'block';
+        formMessage.className = 'form-message error';
+        formMessage.textContent = 'Введите корректный email';
         return;
       }
       
@@ -372,21 +385,27 @@
           })
         });
         
+        // Проверяем статус ответа
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Ошибка ${response.status}`);
+        }
+        
         const result = await response.json();
         
         if (result.success) {
           formMessage.className = 'form-message success';
           formMessage.textContent = 'Вход выполнен! Перенаправление...';
           
-          // Сохраняем данные пользователя (например, в localStorage)
+          // Сохраняем данные пользователя
           if (result.user) {
             localStorage.setItem('user', JSON.stringify(result.user));
           }
           
-          // Перенаправляем на главную страницу через 1 секунду
+          // Перенаправляем на главную страницу через 1.5 секунды
           setTimeout(() => {
             window.location.href = 'index.html';
-          }, 1000);
+          }, 1500);
         } else {
           formMessage.className = 'form-message error';
           formMessage.textContent = result.error || 'Ошибка входа. Проверьте email и пароль';
@@ -394,12 +413,15 @@
       } catch (error) {
         console.error('Login error:', error);
         formMessage.className = 'form-message error';
-        formMessage.textContent = 'Ошибка соединения. Попробуйте позже.';
+        formMessage.textContent = error.message || 'Ошибка соединения. Попробуйте позже.';
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Войти';
       }
-    });
+    }
+
+    // Назначаем обработчик на форму
+    document.getElementById('loginForm').addEventListener('submit', submitLogin);
   </script>
 </body>
 </html>
