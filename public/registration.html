@@ -189,6 +189,23 @@
     .submit-btn:hover {
       background: var(--primary-hover);
     }
+    .submit-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    /* Message */
+    .form-message {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 8px;
+      display: none;
+    }
+    .form-message.error {
+      color: #d32f2f;
+    }
+    .form-message.success {
+      color: #2e7d32;
+    }
     /* ===== FOOTER ===== */
     footer {
       background: var(--footer-bg);
@@ -236,6 +253,7 @@
       color: var(--footer-fg);
     }
     .footer-home-btn {
+      grid-column: 1 / -1;
       margin-top: 32px;
       text-align: center;
     }
@@ -277,12 +295,12 @@
   <main class="main">
     <h1>Создать аккаунт</h1>
     <p class="login-link">Уже есть аккаунт? <a href="login.html">Войти</a></p>
-    <form class="reg-form" onsubmit="event.preventDefault()">
+    <form class="reg-form" id="registerForm">
       <div class="row">
-        <input type="text" placeholder="Ваше имя" autocomplete="given-name">
-        <input type="text" placeholder="Фамилия" autocomplete="family-name">
+        <input type="text" id="userName" placeholder="Ваше имя" autocomplete="given-name" required>
+        <input type="text" id="userSurname" placeholder="Фамилия" autocomplete="family-name" required>
       </div>
-      <input type="email" placeholder="Email" autocomplete="email">
+      <input type="email" id="userEmail" placeholder="Email" autocomplete="email" required>
       <div class="phone-wrapper">
         <select class="country-select" id="countrySelect">
           <option value="BY">BY</option>
@@ -290,14 +308,15 @@
           <option value="UA">UA</option>
           <option value="PL">PL</option>
         </select>
-        <input type="tel" id="phoneInput" placeholder="+375 () 000-00-00" autocomplete="tel">
+        <input type="tel" id="userPhone" placeholder="+375 () 000-00-00" autocomplete="tel" required>
       </div>
-      <input type="password" placeholder="Создать пароль" autocomplete="new-password">
+      <input type="password" id="userPassword" placeholder="Создать пароль" autocomplete="new-password" required>
       <div class="checkbox-row">
         <input type="checkbox" id="consent">
         <label for="consent">Даю согласие на обработку персональных данных</label>
       </div>
-      <button type="submit" class="submit-btn">Зарегистрироваться</button>
+      <button type="submit" class="submit-btn" id="submitBtn">Зарегистрироваться</button>
+      <div id="formMessage" class="form-message"></div>
     </form>
   </main>
   <!-- Footer -->
@@ -326,17 +345,18 @@
           <p>тел. +375 29 245 17 70</p>
           <p>e-mail: vandraluby@gmail.com</p>
         </div>
-      </div>
-      <div class="footer-home-btn">
-        <a href="index.html">На главную</a>
+        <div class="footer-home-btn">
+          <a href="index.html">На главную</a>
+        </div>
       </div>
     </div>
   </footer>
 
   <script>
+    // Обработчик смены кода страны для телефона
     document.addEventListener('DOMContentLoaded', function() {
       const countrySelect = document.getElementById('countrySelect');
-      const phoneInput = document.getElementById('phoneInput');
+      const phoneInput = document.getElementById('userPhone');
 
       const countryCodes = {
         'BY': '+375 () 000-00-00',
@@ -353,6 +373,126 @@
       countrySelect.addEventListener('change', updatePhonePlaceholder);
       updatePhonePlaceholder();
     });
+
+    // Функция для регистрации пользователя
+    async function submitRegistration(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('userName').value.trim();
+      const surname = document.getElementById('userSurname').value.trim();
+      const email = document.getElementById('userEmail').value.trim();
+      const phone = document.getElementById('userPhone').value.trim();
+      const password = document.getElementById('userPassword').value;
+      const consent = document.getElementById('consent').checked;
+      const submitBtn = document.getElementById('submitBtn');
+      const formMessage = document.getElementById('formMessage');
+      
+      // Проверка согласия
+      if (!consent) {
+        formMessage.style.display = 'block';
+        formMessage.className = 'form-message error';
+        formMessage.textContent = 'Пожалуйста, дайте согласие на обработку персональных данных';
+        return;
+      }
+      
+      // Проверка обязательных полей
+      if (!name || !surname || !email || !phone || !password) {
+        formMessage.style.display = 'block';
+        formMessage.className = 'form-message error';
+        formMessage.textContent = 'Пожалуйста, заполните все поля';
+        return;
+      }
+      
+      // Валидация email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        formMessage.style.display = 'block';
+        formMessage.className = 'form-message error';
+        formMessage.textContent = 'Введите корректный email (например: user@example.com)';
+        return;
+      }
+      
+      // Валидация пароля (минимум 6 символов)
+      if (password.length < 6) {
+        formMessage.style.display = 'block';
+        formMessage.className = 'form-message error';
+        formMessage.textContent = 'Пароль должен содержать минимум 6 символов';
+        return;
+      }
+      
+      // Валидация имени и фамилии (только буквы)
+      const nameRegex = /^[A-Za-zА-Яа-я\s\-]+$/;
+      if (!nameRegex.test(name) || !nameRegex.test(surname)) {
+        formMessage.style.display = 'block';
+        formMessage.className = 'form-message error';
+        formMessage.textContent = 'Имя и фамилия должны содержать только буквы';
+        return;
+      }
+      
+      // Валидация телефона
+      if (phone.length < 5) {
+        formMessage.style.display = 'block';
+        formMessage.className = 'form-message error';
+        formMessage.textContent = 'Введите корректный номер телефона';
+        return;
+      }
+      
+      // Блокируем кнопку и показываем загрузку
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Регистрация...';
+      formMessage.style.display = 'block';
+      formMessage.className = 'form-message';
+      formMessage.textContent = 'Создаём аккаунт...';
+      
+      try {
+        const response = await fetch('/api/registration', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: name,
+            surname: surname,
+            email: email,
+            phone: phone,
+            password: password
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          formMessage.className = 'form-message success';
+          formMessage.textContent = result.message || 'Регистрация успешно завершена! Перенаправление...';
+          
+          // Сохраняем данные пользователя в localStorage
+          if (result.user) {
+            localStorage.setItem('user', JSON.stringify(result.user));
+          }
+          
+          // Очищаем форму
+          document.getElementById('registerForm').reset();
+          
+          // Перенаправляем на страницу входа через 2 секунды
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 2000);
+        } else {
+          formMessage.className = 'form-message error';
+          formMessage.textContent = result.error || 'Ошибка регистрации. Попробуйте ещё раз.';
+        }
+      } catch (error) {
+        console.error('Registration error:', error);
+        formMessage.className = 'form-message error';
+        formMessage.textContent = 'Ошибка соединения. Пожалуйста, попробуйте позже.';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Зарегистрироваться';
+      }
+    }
+
+    // Назначаем обработчик на форму
+    document.getElementById('registerForm').addEventListener('submit', submitRegistration);
   </script>
 </body>
 </html>
