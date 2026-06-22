@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Регистрация — Вандралюбы</title>
- <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -18,7 +18,7 @@
       --bg: hsl(0, 0%, 100%);
       --footer-bg: hsl(0, 0%, 15%);
       --footer-fg: hsl(0, 0%, 80%);
-     --font-display: 'PT Serif', serif;
+      --font-display: 'PT Serif', serif;
       --font-body: 'Roboto', sans-serif;
     }
     body {
@@ -39,11 +39,9 @@
     .logo {
       display: flex;
       align-items: center;
-       gap: 2px;
+      gap: 2px;
       text-decoration: none;
-      /* margin-left: 200px; отступ лого от края в шапке */
     }
-    
     .logo-text {
       display: flex;
       flex-direction: column;
@@ -208,7 +206,6 @@
       gap: 3px;
       margin-bottom: 40px;
     }
-   
     .footer-logo .name {
       font-weight: 700;
       font-size: 14px;
@@ -238,6 +235,25 @@
     .footer-cols a:hover {
       color: var(--footer-fg);
     }
+    .footer-home-btn {
+      margin-top: 32px;
+      text-align: center;
+    }
+    .footer-home-btn a {
+      display: inline-block;
+      padding: 12px 32px;
+      border: 1px solid var(--footer-fg);
+      border-radius: 30px;
+      color: var(--footer-fg);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+    }
+    .footer-home-btn a:hover {
+      background: var(--footer-fg);
+      color: var(--footer-bg);
+    }
     /* ===== RESPONSIVE ===== */
     @media (max-width: 600px) {
       .main h1 { font-size: 30px; }
@@ -250,8 +266,8 @@
   <!-- Header -->
   <div class="header">
     <div class="logo">
-      <div ><img src="black_logo.png" width="40px" height="35px" alt="logo"></div>
-       <div class="logo-text">
+      <div><img src="black_logo.png" width="40px" height="35px" alt="logo"></div>
+      <div class="logo-text">
         <span class="name">ВАНДРАЛЮБЫ</span>
         <span class="sub">Турагентство</span>
       </div>
@@ -264,17 +280,17 @@
     <form class="reg-form" onsubmit="event.preventDefault()">
       <div class="row">
         <input type="text" placeholder="Ваше имя">
-        <input type="text" placeholder="Фамилия">
+        <input type="text" placeholder="Фамилия" autocomplete="family-name">
       </div>
       <input type="email" placeholder="Email">
       <div class="phone-wrapper">
-        <select class="country-select">
+        <select class="country-select" id="countrySelect">
           <option value="BY">BY</option>
           <option value="RU">RU</option>
           <option value="UA">UA</option>
           <option value="PL">PL</option>
         </select>
-        <input type="tel" placeholder="+375 () 000-00-00">
+        <input type="tel" id="phoneInput" placeholder="+375 () 000-00-00">
       </div>
       <input type="password" placeholder="Создать пароль">
       <div class="checkbox-row">
@@ -288,8 +304,8 @@
   <footer>
     <div class="footer-inner">
       <div class="footer-logo">
-       <div><img src="logo.png" width="40px" height="35px" alt="logo"></div>
-       <div class="logo-text">
+        <div><img src="logo.png" width="40px" height="35px" alt="logo"></div>
+        <div class="logo-text">
           <span class="name">Вандралюбы</span>
           <span class="sub">Турагентство</span>
         </div>
@@ -311,7 +327,32 @@
           <p>e-mail: vandraluby@gmail.com</p>
         </div>
       </div>
+      <div class="footer-home-btn">
+        <a href="index.html">На главную</a>
+      </div>
     </div>
   </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const countrySelect = document.getElementById('countrySelect');
+      const phoneInput = document.getElementById('phoneInput');
+
+      const countryCodes = {
+        'BY': '+375 () 000-00-00',
+        'RU': '+7 () 000-00-00',
+        'UA': '+380 () 000-00-00',
+        'PL': '+48 () 000-00-00'
+      };
+
+      function updatePhonePlaceholder() {
+        const selected = countrySelect.value;
+        phoneInput.placeholder = countryCodes[selected] || '+375 () 000-00-00';
+      }
+
+      countrySelect.addEventListener('change', updatePhonePlaceholder);
+      updatePhonePlaceholder();
+    });
+  </script>
 </body>
 </html>
