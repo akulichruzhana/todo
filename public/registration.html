@@ -151,6 +151,29 @@
     .phone-wrapper input::placeholder {
       color: hsl(0, 0%, 55%);
     }
+    /* Password wrapper with toggle */
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    .password-wrapper input {
+      width: 100%;
+      padding-right: 50px;
+    }
+    .toggle-password {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 18px;
+      user-select: none;
+      transition: color 0.2s;
+    }
+    .toggle-password:hover {
+      color: var(--foreground);
+    }
     /* Checkbox */
     .checkbox-row {
       display: flex;
@@ -310,7 +333,10 @@
         </select>
         <input type="tel" id="userPhone" placeholder="+375 () 000-00-00" autocomplete="tel" required>
       </div>
-      <input type="password" id="userPassword" placeholder="Создать пароль" autocomplete="new-password" required>
+      <div class="password-wrapper">
+        <input type="password" id="userPassword" placeholder="Создать пароль" autocomplete="new-password" required>
+        <span class="toggle-password" onclick="togglePassword()">👁</span>
+      </div>
       <div class="checkbox-row">
         <input type="checkbox" id="consent">
         <label for="consent">Даю согласие на обработку персональных данных</label>
@@ -373,6 +399,19 @@
       countrySelect.addEventListener('change', updatePhonePlaceholder);
       updatePhonePlaceholder();
     });
+
+    // Функция показа/скрытия пароля
+    function togglePassword() {
+      const passwordInput = document.getElementById('userPassword');
+      const toggleBtn = document.querySelector('.toggle-password');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleBtn.textContent = '🙈';
+      } else {
+        passwordInput.type = 'password';
+        toggleBtn.textContent = '👁';
+      }
+    }
 
     // Функция для регистрации пользователя
     async function submitRegistration(event) {
