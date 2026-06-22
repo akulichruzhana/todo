@@ -1,67 +1,100 @@
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 
+// Берём оригинальную строку подключения из переменной Vercel
+const originalUrl = process.env.POSTGRES_URL_NON_POOLING;
+
+// Разбираем строку подключения и меняем sslmode на 'no-verify'
+// Это исправляет ошибку "self-signed certificate in certificate chain"
+const url = new URL(originalUrl);
+url.searchParams.set('sslmode', 'no-verify');
+const connectionString = url.toString();
+
 const pool = new Pool({
-  connectionString: process.env.VANDRA_POSTGRES_URL,
-  ssl: { rejectUnauthorized: false }
+  connectionString: connectionString,    // используем исправленную строку
+  ssl: { rejectUnauthorized: false }     // дополнительная страховка
 });
 
 module.exports = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, password } = req.body;
+  const { email, password, name, surname, phone } = req.body;
 
-  if (!email || !password) {
+  // Валидация обязательных полей
+  if (!email || !password || !name || !surname) {
     return res.status(400).json({ 
       success: false, 
-      error: 'Заполните email и пароль' 
+      error: 'Пожалуйста, заполните все обязательные поля' 
+    });
+  }
+
+  // Валидация email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({
+      success: false,
+      error: 'Введите корректный email'
+    });
+  }
+
+  // Валидация пароля (минимум 6 символов)
+  if (password.length < 6) {
+    return res.status(400).json({
+      success: false,
+      error: 'Пароль должен содержать минимум 6 символов'
     });
   }
 
   try {
-    // Ищем пользователя по email
-    const result = await pool.query(
-      `SELECT id, name, surname, email, phone, password_hash FROM users WHERE email = $1`,
+    // Проверяем, существует ли пользователь с таким email
+    const existingUser = await pool.query(
+      'SELECT id FROM users WHERE email = $1',
       [email.toLowerCase()]
     );
 
-    if (result.rows.length === 0) {
-      return res.status(401).json({ 
-        success: false, 
-        error: 'Неверный email или пароль' 
+    if (existingUser.rows.length > 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Пользователь с таким email уже зарегистрирован'
       });
     }
 
-    const user = result.rows[0];
+    // Хешируем пароль
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    // Проверяем пароль
-    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    // Создаём пользователя в базе данных
+    const result = await pool.query(
+      `INSERT INTO users (email, password_hash, name, surname, phone, created_at) 
+       VALUES ($1, $2, $3, $4, $5, NOW()) 
+       RETURNING id, email, name, surname, phone`,
+      [email.toLowerCase(), passwordHash, name, surname, phone || null]
+    );
 
-    if (!isValidPassword) {
-      return res.status(401).json({ 
-        success: false, 
-        error: 'Неверный email или пароль' 
-      });
-    }
+    const newUser = result.rows[0];
 
-    // Отправляем данные пользователя (без пароля)
+    // Отправляем успешный ответ с данными пользователя
     res.status(200).json({
       success: true,
+      message: 'Регистрация успешно завершена!',
       user: {
-        id: user.id,
-        name: user.name,
-        surname: user.surname,
-        email: user.email,
-        phone: user.phone
+        id: newUser.id,
+        email: newUser.email,
+        name: newUser.name,
+        surname: newUser.surname,
+        phone: newUser.phone
       }
     });
+
   } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Ошибка сервера. Попробуйте позже.' 
+    console.error('Registration error:', err);
+    res.status(500).json({
+      success: false,
+      error: 'Ошибка сервера. Попробуйте позже.'
     });
   }
 };
