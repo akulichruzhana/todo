@@ -1,8 +1,17 @@
 const { Pool } = require('pg');
 
+// Берём оригинальную строку подключения из переменной Vercel
+const originalUrl = process.env.POSTGRES_URL_NON_POOLING;
+
+// Разбираем строку подключения и меняем sslmode на 'no-verify'
+// Это исправляет ошибку "self-signed certificate in certificate chain"
+const url = new URL(originalUrl);
+url.searchParams.set('sslmode', 'no-verify');
+const connectionString = url.toString();
+
 const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL_NON_POOLING, // <-- заменил
-  ssl: { rejectUnauthorized: false }
+  connectionString: connectionString,    // используем исправленную строку
+  ssl: { rejectUnauthorized: false }     // дополнительная страховка
 });
 
 module.exports = async (req, res) => {
