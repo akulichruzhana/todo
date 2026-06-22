@@ -459,7 +459,19 @@
           })
         });
         
+        // Проверяем, что ответ - JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await response.text();
+          console.error('Server returned non-JSON:', text);
+          throw new Error('Сервер вернул некорректный ответ. Пожалуйста, попробуйте позже.');
+        }
+        
         const result = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(result.error || `Ошибка ${response.status}`);
+        }
         
         if (result.success) {
           formMessage.className = 'form-message success';
@@ -484,7 +496,7 @@
       } catch (error) {
         console.error('Registration error:', error);
         formMessage.className = 'form-message error';
-        formMessage.textContent = 'Ошибка соединения. Пожалуйста, попробуйте позже.';
+        formMessage.textContent = error.message || 'Ошибка соединения. Пожалуйста, попробуйте позже.';
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Зарегистрироваться';
