@@ -11,63 +11,71 @@ url.searchParams.set('sslmode', 'no-verify');
 const connectionString = url.toString();
 
 const pool = new Pool({
-  connectionString: connectionString,    // используем исправленную строку
-  ssl: { rejectUnauthorized: false }     // дополнительная страховка
+  connectionString: connectionString,
+  ssl: { rejectUnauthorized: false }
 });
 
 module.exports = async (req, res) => {
+  // Устанавливаем CORS заголовки
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  // Обрабатываем preflight запрос
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
   
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Получаем все поля из формы регистрации
-  const { name, surname, email, phone, password } = req.body;
-
-  // Валидация обязательных полей
-  if (!name || !surname || !email || !phone || !password) {
-    return res.status(400).json({ 
-      success: false, 
-      error: 'Пожалуйста, заполните все поля: имя, фамилию, email, телефон и пароль' 
-    });
-  }
-
-  // Валидация имени (только буквы, пробелы, дефисы)
-  const nameRegex = /^[A-Za-zА-Яа-я\s\-]+$/;
-  if (!nameRegex.test(name) || !nameRegex.test(surname)) {
-    return res.status(400).json({
-      success: false,
-      error: 'Имя и фамилия должны содержать только буквы'
-    });
-  }
-
-  // Валидация email
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({
-      success: false,
-      error: 'Введите корректный email (например: user@example.com)'
-    });
-  }
-
-  // Валидация телефона (минимальная длина 5 символов)
-  if (phone.length < 5) {
-    return res.status(400).json({
-      success: false,
-      error: 'Введите корректный номер телефона'
-    });
-  }
-
-  // Валидация пароля (минимум 6 символов)
-  if (password.length < 6) {
-    return res.status(400).json({
-      success: false,
-      error: 'Пароль должен содержать минимум 6 символов'
-    });
-  }
-
   try {
+    // Получаем все поля из формы регистрации
+    const { name, surname, email, phone, password } = req.body;
+
+    // Валидация обязательных полей
+    if (!name || !surname || !email || !phone || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Пожалуйста, заполните все поля: имя, фамилию, email, телефон и пароль' 
+      });
+    }
+
+    // Валидация имени (только буквы, пробелы, дефисы)
+    const nameRegex = /^[A-Za-zА-Яа-я\s\-]+$/;
+    if (!nameRegex.test(name) || !nameRegex.test(surname)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Имя и фамилия должны содержать только буквы'
+      });
+    }
+
+    // Валидация email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Введите корректный email (например: user@example.com)'
+      });
+    }
+
+    // Валидация телефона (минимальная длина 5 символов)
+    if (phone.length < 5) {
+      return res.status(400).json({
+        success: false,
+        error: 'Введите корректный номер телефона'
+      });
+    }
+
+    // Валидация пароля (минимум 6 символов)
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        error: 'Пароль должен содержать минимум 6 символов'
+      });
+    }
+
     // Проверяем, существует ли пользователь с таким email
     const existingUser = await pool.query(
       'SELECT id FROM users WHERE email = $1',
