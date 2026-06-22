@@ -208,36 +208,27 @@
     .booking-item:last-child {
       border-bottom: none;
     }
-    .booking-info .booking-tour {
+    .booking-info .booking-name {
       font-weight: 500;
       font-size: 16px;
     }
-    .booking-info .booking-date {
+    .booking-info .booking-phone {
       font-size: 14px;
       color: var(--muted);
       margin-top: 2px;
     }
-    .booking-status {
+    .booking-info .booking-email {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .booking-id {
       padding: 4px 14px;
+      background: #e3f2fd;
+      color: #1565c0;
       border-radius: 20px;
       font-size: 13px;
       font-weight: 500;
-    }
-    .booking-status.confirmed {
-      background: #e3f2fd;
-      color: #1565c0;
-    }
-    .booking-status.pending {
-      background: #fff3e0;
-      color: #e65100;
-    }
-    .booking-status.completed {
-      background: #e8f5e9;
-      color: #2e7d32;
-    }
-    .booking-status.cancelled {
-      background: #ffebee;
-      color: #c62828;
     }
     .empty-state {
       padding: 40px 24px;
@@ -419,11 +410,11 @@
       </div>
       <div class="stat-card">
         <div class="stat-number" id="activeCount">0</div>
-        <div class="stat-label">Активных туров</div>
+        <div class="stat-label">Активных бронирований</div>
       </div>
       <div class="stat-card">
         <div class="stat-number" id="completedCount">0</div>
-        <div class="stat-label">Завершённых туров</div>
+        <div class="stat-label">Завершённых бронирований</div>
       </div>
     </div>
 
@@ -511,7 +502,7 @@
       try {
         const user = JSON.parse(userData);
         displayUserInfo(user);
-        loadUserBookings(user.id || user.email);
+        loadUserBookings(user.email);
       } catch (e) {
         console.error('Ошибка загрузки данных пользователя:', e);
         clearSession();
@@ -549,18 +540,28 @@
       avatar.textContent = firstLetter;
     }
 
-    // Загрузка бронирований пользователя
-    async function loadUserBookings(userId) {
+    // Загрузка бронирований пользователя из БД
+    async function loadUserBookings(email) {
+      const bookingsList = document.getElementById('bookingsList');
+      
       try {
-        // В реальном проекте раскомментируйте этот код:
-        /*
-        const response = await fetch(`/api/bookings?userId=${userId}`, {
+        // Показываем загрузку
+        bookingsList.innerHTML = `
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Загрузка бронирований...</p>
+          </div>
+        `;
+
+        // Реальный запрос к API
+        const response = await fetch(`/api/booking?email=${encodeURIComponent(email)}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           }
         });
         
+        // Проверяем ответ
         if (!response.ok) {
           if (response.status === 401) {
             // Сессия не валидна
@@ -568,50 +569,29 @@
             redirectToLogin();
             return;
           }
-          throw new Error('Ошибка загрузки бронирований');
+          throw new Error(`Ошибка ${response.status}: ${response.statusText}`);
         }
         
-        const bookings = await response.json();
-        renderBookings(bookings);
-        updateStats(bookings);
-        */
+        const result = await response.json();
         
-        // Демонстрационные данные для примера
-        const demoBookings = [
-          {
-            id: 1,
-            tour: 'Путешествие в Италию',
-            date: '2026-07-15',
-            status: 'confirmed'
-          },
-          {
-            id: 2,
-            tour: 'Экскурсия по Парижу',
-            date: '2026-08-20',
-            status: 'pending'
-          },
-          {
-            id: 3,
-            tour: 'Отдых в Турции',
-            date: '2026-06-10',
-            status: 'completed'
-          }
-        ];
-
-        // Имитация загрузки
-        setTimeout(() => {
-          renderBookings(demoBookings);
-          updateStats(demoBookings);
-        }, 500);
+        if (result.success) {
+          const bookings = result.bookings || [];
+          renderBookings(bookings);
+          updateStats(bookings);
+        } else {
+          throw new Error(result.error || 'Ошибка загрузки бронирований');
+        }
         
       } catch (error) {
         console.error('Ошибка загрузки бронирований:', error);
-        const bookingsList = document.getElementById('bookingsList');
         bookingsList.innerHTML = `
           <div class="empty-state">
             <div class="empty-icon">⚠️</div>
             <p>Не удалось загрузить бронирования</p>
-            <p style="font-size: 14px; margin-top: 8px;">Попробуйте обновить страницу</p>
+            <p style="font-size: 14px; margin-top: 8px; color: var(--muted);">${error.message}</p>
+            <button onclick="loadUserBookings('${email}')" style="margin-top: 12px; padding: 8px 24px; background: var(--primary); color: #fff; border: none; border-radius: 20px; cursor: pointer; font-size: 14px;">
+              🔄 Попробовать снова
+            </button>
           </div>
         `;
       }
@@ -626,26 +606,20 @@
           <div class="empty-state">
             <div class="empty-icon">📭</div>
             <p>У вас пока нет бронирований</p>
-            <p style="font-size: 14px; margin-top: 8px;">Перейдите на <a href="index.html" style="color: var(--primary);">главную страницу</a>, чтобы выбрать тур</p>
+            <p style="font-size: 14px; margin-top: 8px;">Перейдите на <a href="index.html" style="color: var(--primary);">главную страницу</a>, чтобы забронировать тур</p>
           </div>
         `;
         return;
       }
 
-      const statusMap = {
-        'confirmed': 'Подтверждено',
-        'pending': 'Ожидает',
-        'completed': 'Завершён',
-        'cancelled': 'Отменён'
-      };
-
       bookingsList.innerHTML = bookings.map(booking => `
         <div class="booking-item">
           <div class="booking-info">
-            <div class="booking-tour">${booking.tour || 'Тур'}</div>
-            <div class="booking-date">📅 ${formatDate(booking.date)}</div>
+            <div class="booking-name">👤 ${booking.name || 'Имя не указано'}</div>
+            <div class="booking-phone">📱 ${booking.phone || 'Телефон не указан'}</div>
+            <div class="booking-email">✉️ ${booking.email || 'Email не указан'}</div>
           </div>
-          <span class="booking-status ${booking.status || 'pending'}">${statusMap[booking.status] || 'Ожидает'}</span>
+          <span class="booking-id">#${booking.id}</span>
         </div>
       `).join('');
     }
@@ -653,27 +627,10 @@
     // Обновление статистики
     function updateStats(bookings) {
       const total = bookings.length;
-      const active = bookings.filter(b => b.status === 'confirmed' || b.status === 'pending').length;
-      const completed = bookings.filter(b => b.status === 'completed').length;
       
       document.getElementById('bookingCount').textContent = total;
-      document.getElementById('activeCount').textContent = active;
-      document.getElementById('completedCount').textContent = completed;
-    }
-
-    // Форматирование даты
-    function formatDate(dateString) {
-      if (!dateString) return 'Дата не указана';
-      try {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('ru-RU', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        });
-      } catch (e) {
-        return dateString;
-      }
+      document.getElementById('activeCount').textContent = total; // Все бронирования считаем активными
+      document.getElementById('completedCount').textContent = 0; // Пока нет статуса, ставим 0
     }
 
     // Выход из аккаунта
