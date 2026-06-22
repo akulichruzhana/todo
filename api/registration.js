@@ -1,10 +1,12 @@
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 
+// Проверяем переменную окружения
 if (!process.env.POSTGRES_URL_NON_POOLING) {
   throw new Error('POSTGRES_URL_NON_POOLING не задана');
 }
 
+// Исправляем sslmode для Neon
 const originalUrl = process.env.POSTGRES_URL_NON_POOLING;
 const url = new URL(originalUrl);
 url.searchParams.set('sslmode', 'no-verify');
@@ -15,7 +17,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// Автосоздание таблицы, если её нет (на всякий случай)
+// Автосоздание таблицы, если её нет
 (async () => {
   try {
     await pool.query(`
@@ -31,11 +33,12 @@ const pool = new Pool({
     `);
     console.log('Таблица usersregistr готова');
   } catch (err) {
-    console.error('Ошибка создания таблицы usersregistr:', err);
+    console.error('Ошибка создания таблицы:', err);
   }
 })();
 
 module.exports = async (req, res) => {
+  // Настройка CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -53,18 +56,12 @@ module.exports = async (req, res) => {
 
     // Валидация
     if (!name || !surname || !email || !phone || !password) {
-      return res.status(400).json({
-        success: false,
-        error: 'Все поля обязательны'
-      });
+      return res.status(400).json({ success: false, error: 'Все поля обязательны' });
     }
 
     const nameRegex = /^[A-Za-zА-Яа-я\s\-]+$/;
     if (!nameRegex.test(name) || !nameRegex.test(surname)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Имя и фамилия должны содержать только буквы'
-      });
+      return res.status(400).json({ success: false, error: 'Имя и фамилия должны содержать только буквы' });
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -80,21 +77,19 @@ module.exports = async (req, res) => {
       return res.status(400).json({ success: false, error: 'Минимум 6 символов для пароля' });
     }
 
-    // Проверка существования email в usersregistr
+    // Проверка, существует ли пользователь
     const existCheck = await pool.query(
       'SELECT id FROM usersregistr WHERE email = $1',
       [email.toLowerCase().trim()]
     );
-
     if (existCheck.rows.length > 0) {
-      return res.status(409).json({
-        success: false,
-        error: 'Пользователь с таким email уже зарегистрирован'
-      });
+      return res.status(409).json({ success: false, error: 'Пользователь с таким email уже зарегистрирован' });
     }
 
+    // Хеширование пароля
     const passwordHash = await bcrypt.hash(password, 10);
 
+    // Вставка в таблицу
     const result = await pool.query(
       `INSERT INTO usersregistr (name, surname, email, phone, password_hash, created_at)
        VALUES ($1, $2, $3, $4, $5, NOW())
@@ -102,32 +97,19 @@ module.exports = async (req, res) => {
       [name.trim(), surname.trim(), email.toLowerCase().trim(), phone.trim(), passwordHash]
     );
 
-    const newUser = result.rows[0];
-
     return res.status(201).json({
       success: true,
-      message: 'Регистрация успешно завершена!',
-      user: {
-        id: newUser.id,
-        name: newUser.name,
-        surname: newUser.surname,
-        email: newUser.email,
-        phone: newUser.phone
-      }
+      message: 'Регистрация успешна!',
+      user: result.rows[0]
     });
   } catch (err) {
-    console.error('Ошибка регистрации в usersregistr:', err);
+    console.error('Ошибка регистрации:', err);
 
-    if (err.code === '23505') { // unique violation
-      return res.status(409).json({
-        success: false,
-        error: 'Этот email уже используется'
-      });
+    // Обработка дубликата email
+    if (err.code === '23505') {
+      return res.status(409).json({ success: false, error: 'Этот email уже используется' });
     }
 
-    return res.status(500).json({
-      success: false,
-      error: 'Внутренняя ошибка сервера. Попробуйте позже.'
-    });
+    return res.status(500).json({ success: false, error: 'Внутренняя ошибка сервера' });
   }
 };
