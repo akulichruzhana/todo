@@ -279,10 +279,10 @@
     <p class="login-link">Уже есть аккаунт? <a href="login.html">Войти</a></p>
     <form class="reg-form" onsubmit="event.preventDefault()">
       <div class="row">
-        <input type="text" placeholder="Ваше имя">
+        <input type="text" placeholder="Ваше имя" autocomplete="given-name">
         <input type="text" placeholder="Фамилия" autocomplete="family-name">
       </div>
-      <input type="email" placeholder="Email">
+      <input type="email" placeholder="Email" autocomplete="email">
       <div class="phone-wrapper">
         <select class="country-select" id="countrySelect">
           <option value="BY">BY</option>
@@ -290,9 +290,9 @@
           <option value="UA">UA</option>
           <option value="PL">PL</option>
         </select>
-        <input type="tel" id="phoneInput" placeholder="+375 () 000-00-00">
+        <input type="tel" id="phoneInput" placeholder="+375 () 000-00-00" autocomplete="tel">
       </div>
-      <input type="password" placeholder="Создать пароль">
+      <input type="password" placeholder="Создать пароль" autocomplete="new-password">
       <div class="checkbox-row">
         <input type="checkbox" id="consent">
         <label for="consent">Даю согласие на обработку персональных данных</label>
