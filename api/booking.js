@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  connectionString: process.env.VANDRA_POSTGRES_URL,
+  connectionString: process.env.POSTGRES_URL_NON_POOLING,
   ssl: { rejectUnauthorized: false }
 });
 
