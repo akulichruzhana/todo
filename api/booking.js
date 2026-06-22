@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  connectionString: process.env.POSTGRES_URL_NON_POOLING,
+  connectionString: process.env.POSTGRES_URL_NON_POOLING, // <-- заменил
   ssl: { rejectUnauthorized: false }
 });
 
@@ -14,7 +14,6 @@ module.exports = async (req, res) => {
 
   const { name, phone, email, tourDate, comment } = req.body;
 
-  // ИСПРАВЛЕНО: правильный синтаксис
   if (!name || !phone || !email) {
     return res.status(400).json({ 
       success: false, 
