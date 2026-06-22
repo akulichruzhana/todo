@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Личный кабинет — Вандралюбы</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: hsl(33, 38%, 49%);
+      --primary-hover: hsl(33, 38%, 42%);
+      --foreground: hsl(0, 0%, 13%);
+      --muted: hsl(0, 0%, 40%);
+      --border: hsl(30, 15%, 85%);
+      --bg: hsl(0, 0%, 100%);
+      --footer-bg: hsl(0, 0%, 15%);
+      --footer-fg: hsl(0, 0%, 80%);
+      --font-display: 'PT Serif', serif;
+      --font-body: 'Roboto', sans-serif;
+      --shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      --radius: 12px;
+    }
+    body {
+      font-family: var(--font-body);
+      color: var(--foreground);
+      background: hsl(0, 0%, 97%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* ===== HEADER / LOGO ===== */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      text-decoration: none;
+    }
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .logo-text .name {
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--foreground);
+      font-family: var(--font-display);
+    }
+    .logo-text .sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .header-actions .user-greeting {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .header-actions .user-greeting strong {
+      color: var(--foreground);
+    }
+    .logout-btn {
+      padding: 8px 20px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 14px;
+      font-family: var(--font-body);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    /* ===== MAIN CONTENT ===== */
+    .main {
+      flex: 1;
+      padding: 40px 24px 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .main h1 {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .main .subtitle {
+      color: var(--muted);
+      font-size: 16px;
+      margin-bottom: 32px;
+    }
+    /* ===== PROFILE CARD ===== */
+    .profile-card {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      margin-bottom: 32px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 24px;
+      align-items: center;
+    }
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      flex-shrink: 0;
+    }
+    .profile-info h2 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .profile-info .profile-email {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .profile-info .profile-phone {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 2px;
+    }
+    .profile-status {
+      padding: 6px 16px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    /* ===== STATS GRID ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .stat-card .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--primary);
+      font-family: var(--font-display);
+    }
+    .stat-card .stat-label {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    /* ===== BOOKINGS SECTION ===== */
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      font-family: var(--font-display);
+    }
+    .bookings-list {
+      background: var(--bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .booking-item {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .booking-item:last-child {
+      border-bottom: none;
+    }
+    .booking-info .booking-tour {
+      font-weight: 500;
+      font-size: 16px;
+    }
+    .booking-info .booking-date {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .booking-status {
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .booking-status.confirmed {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+    .booking-status.pending {
+      background: #fff3e0;
+      color: #e65100;
+    }
+    .booking-status.completed {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    .booking-status.cancelled {
+      background: #ffebee;
+      color: #c62828;
+    }
+    .empty-state {
+      padding: 40px 24px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .empty-state .empty-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+    .empty-state p {
+      font-size: 16px;
+    }
+    /* ===== LOADING ===== */
+    .loading-state {
+      padding: 60px 24px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .loading-state .spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border);
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 16px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--footer-bg);
+      color: var(--footer-fg);
+      padding: 60px 24px;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      margin-bottom: 40px;
+    }
+    .footer-logo .name {
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: var(--footer-fg);
+    }
+    .footer-logo .sub {
+      font-size: 12px;
+      color: hsl(0, 0%, 55%);
+    }
+    .footer-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 32px;
+      font-size: 14px;
+      color: hsl(0, 0%, 55%);
+    }
+    .footer-cols .col-title {
+      color: var(--footer-fg);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .footer-cols a {
+      color: hsl(0, 0%, 55%);
+      text-decoration: underline;
+    }
+    .footer-cols a:hover {
+      color: var(--footer-fg);
+    }
+    .footer-home-btn {
+      grid-column: 1 / -1;
+      margin-top: 32px;
+      text-align: center;
+    }
+    .footer-home-btn a {
+      display: inline-block;
+      padding: 12px 32px;
+      border: 1px solid var(--footer-fg);
+      border-radius: 30px;
+      color: var(--footer-fg);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      transition: background 0.2s, color 0.2s;
+    }
+    .footer-home-btn a:hover {
+      background: var(--footer-fg);
+      color: var(--footer-bg);
+    }
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .header {
+        padding: 16px 20px;
+      }
+      .profile-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .profile-avatar {
+        margin: 0 auto;
+      }
+      .profile-status {
+        margin: 0 auto;
+      }
+      .main h1 {
+        font-size: 28px;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .booking-item {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+    @media (max-width: 480px) {
+      .header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-cols {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <a href="index.html" class="logo">
+      <div><img src="black_logo.png" width="40px" height="35px" alt="logo"></div>
+      <div class="logo-text">
+        <span class="name">ВАНДРАЛЮБЫ</span>
+        <span class="sub">Турагентство</span>
+      </div>
+    </a>
+    <div class="header-actions">
+      <span class="user-greeting">👋 Здравствуйте, <strong id="userNameDisplay">Гость</strong></span>
+      <button class="logout-btn" id="logoutBtn">Выйти</button>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="main">
+    <h1>Личный кабинет</h1>
+    <p class="subtitle">Управляйте своими бронированиями и личными данными</p>
+
+    <!-- Profile Card -->
+    <div class="profile-card" id="profileCard">
+      <div class="profile-avatar" id="userAvatar">И</div>
+      <div class="profile-info">
+        <h2 id="userFullName">Иван Петров</h2>
+        <div class="profile-email" id="userEmailDisplay">ivan@example.com</div>
+        <div class="profile-phone" id="userPhoneDisplay">+375 29 123 45 67</div>
+      </div>
+      <div class="profile-status">✅ Активен</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="bookingCount">0</div>
+        <div class="stat-label">Всего бронирований</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="activeCount">0</div>
+        <div class="stat-label">Активных туров</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="completedCount">0</div>
+        <div class="stat-label">Завершённых туров</div>
+      </div>
+    </div>
+
+    <!-- Bookings -->
+    <h2 class="section-title">📋 Мои бронирования</h2>
+    <div class="bookings-list" id="bookingsList">
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Загрузка бронирований...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <div><img src="logo.png" width="40px" height="35px" alt="logo"></div>
+        <div class="logo-text">
+          <span class="name">Вандралюбы</span>
+          <span class="sub">Турагентство</span>
+        </div>
+      </div>
+      <div class="footer-cols">
+        <div>
+          <p class="col-title">ЧУП «Вандралюбы»</p>
+          <p>© 2026. Все права защищены</p>
+          <a href="#">Политика конфиденциальности</a>
+        </div>
+        <div>
+          <p class="col-title">Адрес:</p>
+          <p>г. Минск, ул. Ленина, 15</p>
+          <p>г. Минск, ул. Ратомская, 7</p>
+        </div>
+        <div>
+          <p class="col-title">Заказ туров и бронирование:</p>
+          <p>тел. +375 29 245 17 70</p>
+          <p>e-mail: vandraluby@gmail.com</p>
+        </div>
+        <div class="footer-home-btn">
+          <a href="index.html">На главную</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Ключ для хранения данных пользователя
+    const USER_STORAGE_KEY = 'user';
+    const SESSION_EXPIRY_KEY = 'session_expiry';
+    const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 часа
+
+    // Проверка сессии при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+      checkSession();
+    });
+
+    // Проверка валидности сессии
+    function checkSession() {
+      const userData = localStorage.getItem(USER_STORAGE_KEY);
+      const sessionExpiry = localStorage.getItem(SESSION_EXPIRY_KEY);
+      
+      // Если нет данных пользователя - перенаправляем на вход
+      if (!userData) {
+        redirectToLogin();
+        return;
+      }
+
+      // Проверяем истечение сессии
+      if (sessionExpiry) {
+        const expiryTime = parseInt(sessionExpiry);
+        const currentTime = Date.now();
+        
+        if (currentTime > expiryTime) {
+          // Сессия истекла
+          clearSession();
+          redirectToLogin();
+          return;
+        }
+      } else {
+        // Если нет метки времени, устанавливаем новую
+        extendSession();
+      }
+
+      try {
+        const user = JSON.parse(userData);
+        displayUserInfo(user);
+        loadUserBookings(user.id || user.email);
+      } catch (e) {
+        console.error('Ошибка загрузки данных пользователя:', e);
+        clearSession();
+        redirectToLogin();
+      }
+    }
+
+    // Продление сессии (обновление времени истечения)
+    function extendSession() {
+      const expiryTime = Date.now() + SESSION_DURATION;
+      localStorage.setItem(SESSION_EXPIRY_KEY, expiryTime.toString());
+    }
+
+    // Очистка сессии
+    function clearSession() {
+      localStorage.removeItem(USER_STORAGE_KEY);
+      localStorage.removeItem(SESSION_EXPIRY_KEY);
+    }
+
+    // Перенаправление на страницу входа
+    function redirectToLogin() {
+      window.location.href = 'login.html';
+    }
+
+    // Отображение информации о пользователе
+    function displayUserInfo(user) {
+      document.getElementById('userNameDisplay').textContent = user.name || 'Гость';
+      document.getElementById('userFullName').textContent = `${user.name || ''} ${user.surname || ''}`.trim() || 'Пользователь';
+      document.getElementById('userEmailDisplay').textContent = user.email || 'email@example.com';
+      document.getElementById('userPhoneDisplay').textContent = user.phone || 'Не указан';
+      
+      // Аватар с первой буквой имени
+      const avatar = document.getElementById('userAvatar');
+      const firstLetter = (user.name || 'П')[0].toUpperCase();
+      avatar.textContent = firstLetter;
+    }
+
+    // Загрузка бронирований пользователя
+    async function loadUserBookings(userId) {
+      try {
+        // В реальном проекте раскомментируйте этот код:
+        /*
+        const response = await fetch(`/api/bookings?userId=${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        
+        if (!response.ok) {
+          if (response.status === 401) {
+            // Сессия не валидна
+            clearSession();
+            redirectToLogin();
+            return;
+          }
+          throw new Error('Ошибка загрузки бронирований');
+        }
+        
+        const bookings = await response.json();
+        renderBookings(bookings);
+        updateStats(bookings);
+        */
+        
+        // Демонстрационные данные для примера
+        const demoBookings = [
+          {
+            id: 1,
+            tour: 'Путешествие в Италию',
+            date: '2026-07-15',
+            status: 'confirmed'
+          },
+          {
+            id: 2,
+            tour: 'Экскурсия по Парижу',
+            date: '2026-08-20',
+            status: 'pending'
+          },
+          {
+            id: 3,
+            tour: 'Отдых в Турции',
+            date: '2026-06-10',
+            status: 'completed'
+          }
+        ];
+
+        // Имитация загрузки
+        setTimeout(() => {
+          renderBookings(demoBookings);
+          updateStats(demoBookings);
+        }, 500);
+        
+      } catch (error) {
+        console.error('Ошибка загрузки бронирований:', error);
+        const bookingsList = document.getElementById('bookingsList');
+        bookingsList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">⚠️</div>
+            <p>Не удалось загрузить бронирования</p>
+            <p style="font-size: 14px; margin-top: 8px;">Попробуйте обновить страницу</p>
+          </div>
+        `;
+      }
+    }
+
+    // Отображение бронирований
+    function renderBookings(bookings) {
+      const bookingsList = document.getElementById('bookingsList');
+      
+      if (!bookings || bookings.length === 0) {
+        bookingsList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <p>У вас пока нет бронирований</p>
+            <p style="font-size: 14px; margin-top: 8px;">Перейдите на <a href="index.html" style="color: var(--primary);">главную страницу</a>, чтобы выбрать тур</p>
+          </div>
+        `;
+        return;
+      }
+
+      const statusMap = {
+        'confirmed': 'Подтверждено',
+        'pending': 'Ожидает',
+        'completed': 'Завершён',
+        'cancelled': 'Отменён'
+      };
+
+      bookingsList.innerHTML = bookings.map(booking => `
+        <div class="booking-item">
+          <div class="booking-info">
+            <div class="booking-tour">${booking.tour || 'Тур'}</div>
+            <div class="booking-date">📅 ${formatDate(booking.date)}</div>
+          </div>
+          <span class="booking-status ${booking.status || 'pending'}">${statusMap[booking.status] || 'Ожидает'}</span>
+        </div>
+      `).join('');
+    }
+
+    // Обновление статистики
+    function updateStats(bookings) {
+      const total = bookings.length;
+      const active = bookings.filter(b => b.status === 'confirmed' || b.status === 'pending').length;
+      const completed = bookings.filter(b => b.status === 'completed').length;
+      
+      document.getElementById('bookingCount').textContent = total;
+      document.getElementById('activeCount').textContent = active;
+      document.getElementById('completedCount').textContent = completed;
+    }
+
+    // Форматирование даты
+    function formatDate(dateString) {
+      if (!dateString) return 'Дата не указана';
+      try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ru-RU', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        });
+      } catch (e) {
+        return dateString;
+      }
+    }
+
+    // Выход из аккаунта
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      if (confirm('Вы уверены, что хотите выйти из аккаунта?')) {
+        clearSession();
+        window.location.href = 'login.html';
+      }
+    });
+
+    // Автоматическое продление сессии при активности пользователя
+    let sessionExtendTimer = null;
+    
+    function resetSessionTimer() {
+      if (sessionExtendTimer) {
+        clearTimeout(sessionExtendTimer);
+      }
+      
+      // Продлеваем сессию при каждом действии пользователя
+      extendSession();
+      
+      // Устанавливаем таймер на проверку через 30 минут
+      sessionExtendTimer = setTimeout(() => {
+        checkSession();
+      }, 30 * 60 * 1000); // 30 минут
+    }
+
+    // События для продления сессии
+    document.addEventListener('click', resetSessionTimer);
+    document.addEventListener('keydown', resetSessionTimer);
+    document.addEventListener('scroll', resetSessionTimer);
+    document.addEventListener('mousemove', resetSessionTimer);
+
+    // Периодическая проверка сессии каждые 5 минут
+    setInterval(() => {
+      checkSession();
+    }, 5 * 60 * 1000); // 5 минут
+
+    // Обновление сессии при переходе на другую вкладку
+    document.addEventListener('visibilitychange', function() {
+      if (!document.hidden) {
+        checkSession();
+      }
+    });
+  </script>
+</body>
+</html>
