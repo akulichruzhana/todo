@@ -1,48 +1,64 @@
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 
-// Берём оригинальную строку подключения из переменной Vercel
-const originalUrl = process.env.POSTGRES_URL_NON_POOLING;
+if (!process.env.POSTGRES_URL_NON_POOLING) {
+  throw new Error('POSTGRES_URL_NON_POOLING не задана');
+}
 
-// Разбираем строку подключения и меняем sslmode на 'no-verify'
-// Это исправляет ошибку "self-signed certificate in certificate chain"
+const originalUrl = process.env.POSTGRES_URL_NON_POOLING;
 const url = new URL(originalUrl);
 url.searchParams.set('sslmode', 'no-verify');
 const connectionString = url.toString();
 
 const pool = new Pool({
-  connectionString: connectionString,
+  connectionString,
   ssl: { rejectUnauthorized: false }
 });
 
+// Автосоздание таблицы, если её нет (на всякий случай)
+(async () => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS usersregistr (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        surname VARCHAR(100) NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        phone VARCHAR(50),
+        password_hash VARCHAR(255) NOT NULL,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `);
+    console.log('Таблица usersregistr готова');
+  } catch (err) {
+    console.error('Ошибка создания таблицы usersregistr:', err);
+  }
+})();
+
 module.exports = async (req, res) => {
-  // Устанавливаем CORS заголовки
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  
-  // Обрабатываем preflight запрос
+
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
-  
+
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ success: false, error: 'Метод не поддерживается' });
   }
 
   try {
-    // Получаем все поля из формы регистрации
     const { name, surname, email, phone, password } = req.body;
 
-    // Валидация обязательных полей
+    // Валидация
     if (!name || !surname || !email || !phone || !password) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Пожалуйста, заполните все поля: имя, фамилию, email, телефон и пароль' 
+      return res.status(400).json({
+        success: false,
+        error: 'Все поля обязательны'
       });
     }
 
-    // Валидация имени (только буквы, пробелы, дефисы)
     const nameRegex = /^[A-Za-zА-Яа-я\s\-]+$/;
     if (!nameRegex.test(name) || !nameRegex.test(surname)) {
       return res.status(400).json({
@@ -51,60 +67,44 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Валидация email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Введите корректный email (например: user@example.com)'
-      });
+      return res.status(400).json({ success: false, error: 'Некорректный email' });
     }
 
-    // Валидация телефона (минимальная длина 5 символов)
     if (phone.length < 5) {
-      return res.status(400).json({
-        success: false,
-        error: 'Введите корректный номер телефона'
-      });
+      return res.status(400).json({ success: false, error: 'Слишком короткий телефон' });
     }
 
-    // Валидация пароля (минимум 6 символов)
     if (password.length < 6) {
-      return res.status(400).json({
-        success: false,
-        error: 'Пароль должен содержать минимум 6 символов'
-      });
+      return res.status(400).json({ success: false, error: 'Минимум 6 символов для пароля' });
     }
 
-    // Проверяем, существует ли пользователь с таким email
-    const existingUser = await pool.query(
-      'SELECT id FROM users WHERE email = $1',
-      [email.toLowerCase()]
+    // Проверка существования email в usersregistr
+    const existCheck = await pool.query(
+      'SELECT id FROM usersregistr WHERE email = $1',
+      [email.toLowerCase().trim()]
     );
 
-    if (existingUser.rows.length > 0) {
-      return res.status(400).json({
+    if (existCheck.rows.length > 0) {
+      return res.status(409).json({
         success: false,
         error: 'Пользователь с таким email уже зарегистрирован'
       });
     }
 
-    // Хешируем пароль
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
+    const passwordHash = await bcrypt.hash(password, 10);
 
-    // Создаём пользователя в базе данных
     const result = await pool.query(
-      `INSERT INTO users (name, surname, email, phone, password_hash, created_at) 
-       VALUES ($1, $2, $3, $4, $5, NOW()) 
+      `INSERT INTO usersregistr (name, surname, email, phone, password_hash, created_at)
+       VALUES ($1, $2, $3, $4, $5, NOW())
        RETURNING id, name, surname, email, phone`,
-      [name.trim(), surname.trim(), email.toLowerCase(), phone.trim(), passwordHash]
+      [name.trim(), surname.trim(), email.toLowerCase().trim(), phone.trim(), passwordHash]
     );
 
     const newUser = result.rows[0];
 
-    // Отправляем успешный ответ с данными пользователя (без пароля)
-    res.status(200).json({
+    return res.status(201).json({
       success: true,
       message: 'Регистрация успешно завершена!',
       user: {
@@ -115,12 +115,19 @@ module.exports = async (req, res) => {
         phone: newUser.phone
       }
     });
-
   } catch (err) {
-    console.error('Registration error:', err);
-    res.status(500).json({ 
-      success: false, 
-      error: 'Ошибка сервера. Попробуйте позже.' 
+    console.error('Ошибка регистрации в usersregistr:', err);
+
+    if (err.code === '23505') { // unique violation
+      return res.status(409).json({
+        success: false,
+        error: 'Этот email уже используется'
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: 'Внутренняя ошибка сервера. Попробуйте позже.'
     });
   }
 };
