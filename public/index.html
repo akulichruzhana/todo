@@ -470,10 +470,12 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           тел. +375 29 245 17 70
         </a>
-        <a href="login.html">
-        <button class="arrow-btn">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button></a>
+        <!-- Кнопка входа/кабинет -->
+        <a href="login.html" id="authLink">
+          <button class="arrow-btn" id="authBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </a>
       </div>
     </div>
   </header>
@@ -760,14 +762,99 @@
   </footer>
   
   <script>
-    // Переменные для хранения выбранного тура
+    // Ключ для хранения данных пользователя
+    const USER_STORAGE_KEY = 'user';
+
+    // Проверка сессии при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+      checkAuth();
+      updateHeaderButton();
+    });
+
+    // Проверка авторизации
+    function checkAuth() {
+      const userData = localStorage.getItem(USER_STORAGE_KEY);
+      
+      // Если есть данные пользователя - он авторизован
+      if (userData) {
+        try {
+          const user = JSON.parse(userData);
+          return true;
+        } catch (e) {
+          localStorage.removeItem(USER_STORAGE_KEY);
+          return false;
+        }
+      }
+      return false;
+    }
+
+    // Получение данных пользователя
+    function getUserData() {
+      const userData = localStorage.getItem(USER_STORAGE_KEY);
+      if (userData) {
+        try {
+          return JSON.parse(userData);
+        } catch (e) {
+          return null;
+        }
+      }
+      return null;
+    }
+
+    // Обновление кнопки в хедере
+    function updateHeaderButton() {
+      const authLink = document.getElementById('authLink');
+      const authBtn = document.getElementById('authBtn');
+      const user = getUserData();
+      
+      if (user) {
+        // Пользователь авторизован - показываем иконку кабинета
+        authLink.href = 'cabinet.html';
+        authBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        `;
+        authBtn.style.borderColor = 'var(--primary)';
+      } else {
+        // Пользователь не авторизован - показываем иконку входа
+        authLink.href = 'login.html';
+        authBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        `;
+        authBtn.style.borderColor = 'rgba(255,255,255,0.4)';
+      }
+    }
+
+    // ============================================
+    // КОД ДЛЯ СТРАНИЦЫ ВХОДА (login.html)
+    // Этот код должен быть на странице login.html
+    // ============================================
+    // При успешном входе сохраняем данные пользователя БЕЗ СРОКА ДЕЙСТВИЯ
+    // localStorage.setItem('user', JSON.stringify(userData));
+    // Затем перенаправляем на главную:
+    // window.location.href = 'index.html';
+
+    // ============================================
+    // КОД ДЛЯ ВЫХОДА (на странице cabinet.html)
+    // ============================================
+    // При нажатии на кнопку "Выйти":
+    // localStorage.removeItem('user');
+    // window.location.href = 'index.html';
+
+    // ============================================
+    // Переменные для выбора тура
+    // ============================================
     let selectedTour = null;
     let selectedTourName = '';
     let selectedTourDate = '';
 
     // Функция выбора тура
     function selectTour(button, tourName, tourDate) {
-      // Убираем выделение со всех туров
       document.querySelectorAll('.tour-item').forEach(item => {
         item.classList.remove('selected');
       });
@@ -776,24 +863,20 @@
         btn.textContent = 'Выбрать тур';
       });
 
-      // Выделяем выбранный тур
       const parentItem = button.closest('.tour-item');
       parentItem.classList.add('selected');
       button.classList.add('selected');
       button.textContent = 'Выбран !';
 
-      // Сохраняем данные
       selectedTourName = tourName;
       selectedTourDate = tourDate;
       selectedTour = { name: tourName, date: tourDate };
 
-      // Показываем информацию о выбранном туре
       const infoDiv = document.getElementById('selectedTourInfo');
       infoDiv.style.display = 'block';
       document.getElementById('selectedTourName').textContent = tourName;
       document.getElementById('selectedTourDate').textContent = tourDate;
 
-      // Прокручиваем к форме
       document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth' });
     }
 
@@ -809,7 +892,6 @@
       const submitBtn = document.getElementById('submitBtn');
       const formMessage = document.getElementById('formMessage');
       
-      // Проверка согласия
       if (!consent) {
         formMessage.style.display = 'block';
         formMessage.style.color = 'red';
@@ -817,7 +899,6 @@
         return;
       }
       
-      // Проверка обязательных полей
       if (!name || !phone || !email) {
         formMessage.style.display = 'block';
         formMessage.style.color = 'red';
@@ -825,7 +906,6 @@
         return;
       }
 
-      // Проверка выбранного тура
       if (!selectedTour) {
         formMessage.style.display = 'block';
         formMessage.style.color = 'red';
@@ -833,7 +913,6 @@
         return;
       }
       
-      // Блокируем кнопку и показываем загрузку
       submitBtn.disabled = true;
       submitBtn.textContent = 'Отправка...';
       formMessage.style.display = 'block';
@@ -841,7 +920,6 @@
       formMessage.textContent = 'Отправляем заявку...';
       
       try {
-        // Добавляем название тура в комментарий, если поле пустое
         let fullComment = comment;
         if (!fullComment) {
           fullComment = `Тур: ${selectedTourName}`;
@@ -870,7 +948,6 @@
           formMessage.textContent = result.message || 'Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.';
           document.getElementById('bookingForm').reset();
           
-          // Сбрасываем выбранный тур
           document.querySelectorAll('.tour-item').forEach(item => {
             item.classList.remove('selected');
           });
