@@ -277,7 +277,20 @@
     /* ===== TOURS ===== */
     .tours { padding: 4rem 0; }
     .tours h2 { text-align: center; font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 700; margin-bottom: 3rem; }
-    .tours-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1rem; }
+    
+    /* Первая сетка (первые 5 туров) */
+    .tours-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    /* Вторая сетка (следующие 5 туров — зеркальное отражение) */
+    .tours-grid-reversed {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
     .tour-card {
       position: relative; overflow: hidden; border-radius: 0.5rem;
       min-height: 200px; cursor: pointer;
@@ -300,6 +313,14 @@
     .tour-card .tour-price { color: var(--primary); font-size: 0.875rem; font-weight: 600; margin-top: 0.5rem; }
     .tour-tall { grid-row: span 2; }
     .tour-wide { grid-column: span 2; }
+    
+    /* Порядок элементов во второй сетке (зеркальный) */
+    .tours-grid-reversed .tour-card:nth-child(1) { order: 5; } /* маленькая справа */
+    .tours-grid-reversed .tour-card:nth-child(2) { order: 4; } /* маленькая */
+    .tours-grid-reversed .tour-card:nth-child(3) { order: 1; } /* большая слева */
+    .tours-grid-reversed .tour-card:nth-child(4) { order: 2; } /* маленькая */
+    .tours-grid-reversed .tour-card:nth-child(5) { order: 3; } /* маленькая */
+    
     /* ===== GALLERY ===== */
     .gallery { background: var(--gallery-bg); padding: 4rem 0; }
     .gallery-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
@@ -373,6 +394,12 @@
       .header-nav, .header-phone { display: none; }
       .features-grid { grid-template-columns: repeat(2, 1fr); }
       .tours-grid { grid-template-columns: repeat(2, 1fr); }
+      .tours-grid-reversed { grid-template-columns: repeat(2, 1fr); }
+      .tours-grid-reversed .tour-card:nth-child(1) { order: 1; }
+      .tours-grid-reversed .tour-card:nth-child(2) { order: 2; }
+      .tours-grid-reversed .tour-card:nth-child(3) { order: 3; }
+      .tours-grid-reversed .tour-card:nth-child(4) { order: 4; }
+      .tours-grid-reversed .tour-card:nth-child(5) { order: 5; }
       .tour-tall { grid-row: span 1; }
       .gallery-grid { grid-template-columns: repeat(2, 1fr); }
       .about-grid { grid-template-columns: 1fr; }
@@ -511,6 +538,8 @@
   <section class="tours" id="tours">
     <div class="container">
       <h2>Популярные предложения</h2>
+      
+      <!-- Первая сетка (первые 5 туров) -->
       <div class="tours-grid">
         <div class="tour-card">
           <img src="glubokoe.jpg" alt="Глубокое">
@@ -535,6 +564,36 @@
         <div class="tour-card">
           <img src="polessye.jpg" alt="Полесье">
           <div class="tour-card-content"><h3>Исследование Полесья: дремлющие болота</h3><span class="tour-price">от 120 BYN</span></div>
+        </div>
+      </div>
+
+      <!-- Вторая сетка (следующие 5 туров — зеркальное отражение) -->
+      <div class="tours-grid-reversed">
+        <!-- Большая карточка слева (будет отображаться первой по порядку, но в сетке окажется слева) -->
+        <div class="tour-card tour-tall tour-wide">
+          <img src="заказники.jpg" alt="Беловежская Пуща">
+          <div class="tour-card-content">
+            <h3>Заказники и города: Беловежская Пуща и её соседи</h3>
+            <span class="tour-sub">Брест · Скидель · реки, леса и заказники</span>
+            <span class="tour-price">от 300 BYN</span>
+          </div>
+        </div>
+        <!-- Маленькие карточки справа -->
+        <div class="tour-card">
+          <img src="ошмяны.png" alt="Ошмяны">
+          <div class="tour-card-content"><h3>Ошмяны: край храмов и вишнёвых садов</h3><span class="tour-price">от 100 BYN</span></div>
+        </div>
+        <div class="tour-card">
+          <img src="мозырь.png" alt="Мозырь">
+          <div class="tour-card-content"><h3>Мозырь на Днепре</h3><span class="tour-price">от 110 BYN</span></div>
+        </div>
+        <div class="tour-card">
+          <img src="солигорск.jpg" alt="Солигорск">
+          <div class="tour-card-content"><h3>Солигорск: от белых солнц до изумрудных озер</h3><span class="tour-price">от 200 BYN</span></div>
+        </div>
+        <div class="tour-card">
+          <img src="верхнедвинск.jpg" alt="Верхнедвинск">
+          <div class="tour-card-content"><h3>Верхнедвинск: где начинается Двина</h3><span class="tour-price">от 160 BYN</span></div>
         </div>
       </div>
     </div>
