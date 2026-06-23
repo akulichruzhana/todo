@@ -674,7 +674,7 @@
       const parentItem = button.closest('.tour-item');
       parentItem.classList.add('selected');
       button.classList.add('selected');
-      button.textContent = '✅ Выбран';
+      button.textContent = 'Выбран !';
 
       // Сохраняем данные
       selectedTourName = tourName;
@@ -761,7 +761,7 @@
         
         if (result.success) {
           formMessage.style.color = 'green';
-          formMessage.textContent = result.message || '✅ Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.';
+          formMessage.textContent = result.message || 'Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.';
           document.getElementById('bookingForm').reset();
           
           // Сбрасываем выбранный тур
