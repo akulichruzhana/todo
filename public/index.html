@@ -487,7 +487,23 @@
     </div>
   </section>
 
- 
+  <!-- 2. Список туров -->
+  <section id="tours-list" class="tours-list-section">
+    <div class="container">
+      <h2>Выберите тур</h2>
+      <p class="subtitle">Нажмите на тур, чтобы выбрать его, затем заполните форму ниже для бронирования</p>
+      
+      <div class="tours-list" id="toursList">
+        <!-- Тур 1 -->
+        <div class="tour-item" data-tour="Глубокое в глубинку" data-date="2026-07-15" data-price="180 BYN">
+          <span class="tour-badge">Популярный</span>
+          <h3>Глубокое в глубинку</h3>
+          <div class="tour-date">15 июля 2026</div>
+          <div class="tour-description">Погрузитесь в атмосферу белорусской глубинки. Посетите старинные усадьбы, прогуляйтесь по живописным озёрам и узнайте тайны местных легенд.</div>
+          <div class="tour-price">от 180 BYN</div>
+          <button class="tour-select-btn" onclick="selectTour(this, 'Глубокое в глубинку', '2026-07-15')">Выбрать тур</button>
+        </div>
+  
 
         <!-- Тур 2 -->
         <div class="tour-item" data-tour="Классика Гродно" data-date="2026-07-20" data-price="200 BYN">
@@ -672,23 +688,7 @@
     </div>
   </section>
 
- <!-- 2. Список туров -->
-  <section id="tours-list" class="tours-list-section">
-    <div class="container">
-      <h2>Выберите тур</h2>
-      <p class="subtitle">Нажмите на тур, чтобы выбрать его, затем заполните форму ниже для бронирования</p>
-      
-      <div class="tours-list" id="toursList">
-        <!-- Тур 1 -->
-        <div class="tour-item" data-tour="Глубокое в глубинку" data-date="2026-07-15" data-price="180 BYN">
-          <span class="tour-badge">Популярный</span>
-          <h3>Глубокое в глубинку</h3>
-          <div class="tour-date">15 июля 2026</div>
-          <div class="tour-description">Погрузитесь в атмосферу белорусской глубинки. Посетите старинные усадьбы, прогуляйтесь по живописным озёрам и узнайте тайны местных легенд.</div>
-          <div class="tour-price">от 180 BYN</div>
-          <button class="tour-select-btn" onclick="selectTour(this, 'Глубокое в глубинку', '2026-07-15')">Выбрать тур</button>
-        </div>
-  
+
   <!-- CONTACT -->
   <section class="contact" id="contact">
     <div class="container">
