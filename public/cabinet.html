@@ -684,9 +684,9 @@
         return `
           <div class="booking-item">
             <div class="booking-info">
-              <div class="booking-tour">Тур:${tourName}</div>
-              <div class="booking-date">Дата:${formattedDate}</div>
-              ${comment ? `<div class="booking-comment">💬 ${comment}</div>` : ''}
+              <div class="booking-tour"> ${tourName}</div>
+              <div class="booking-date">/*comment*/ ${formattedDate}</div>
+              ${comment ? `<div class="booking-comment"> ${comment}</div>` : ''}
             </div>
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
               <span class="booking-status ${status}">${statusLabel}</span>
