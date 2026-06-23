@@ -285,10 +285,11 @@
       gap: 1rem;
       margin-bottom: 2rem;
     }
-    /* Вторая сетка (следующие 5 туров — зеркальное отражение) */
+    /* Вторая сетка (следующие 5 туров — большая слева, 4 маленькие справа) */
     .tours-grid-reversed {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-rows: auto auto;
       gap: 1rem;
     }
     .tour-card {
@@ -314,12 +315,28 @@
     .tour-tall { grid-row: span 2; }
     .tour-wide { grid-column: span 2; }
     
-    /* Порядок элементов во второй сетке (зеркальный) */
-    .tours-grid-reversed .tour-card:nth-child(1) { order: 5; } /* маленькая справа */
-    .tours-grid-reversed .tour-card:nth-child(2) { order: 4; } /* маленькая */
-    .tours-grid-reversed .tour-card:nth-child(3) { order: 1; } /* большая слева */
-    .tours-grid-reversed .tour-card:nth-child(4) { order: 2; } /* маленькая */
-    .tours-grid-reversed .tour-card:nth-child(5) { order: 3; } /* маленькая */
+    /* Расположение во второй сетке: большая слева (занимает 2 ряда), маленькие справа */
+    .tours-grid-reversed .tour-card-big {
+      grid-column: 1 / 2;
+      grid-row: 1 / 3;
+      min-height: 420px;
+    }
+    .tours-grid-reversed .tour-card-small-top {
+      grid-column: 2 / 3;
+      grid-row: 1 / 2;
+    }
+    .tours-grid-reversed .tour-card-small-top-right {
+      grid-column: 3 / 4;
+      grid-row: 1 / 2;
+    }
+    .tours-grid-reversed .tour-card-small-bottom {
+      grid-column: 2 / 3;
+      grid-row: 2 / 3;
+    }
+    .tours-grid-reversed .tour-card-small-bottom-right {
+      grid-column: 3 / 4;
+      grid-row: 2 / 3;
+    }
     
     /* ===== GALLERY ===== */
     .gallery { background: var(--gallery-bg); padding: 4rem 0; }
@@ -394,12 +411,31 @@
       .header-nav, .header-phone { display: none; }
       .features-grid { grid-template-columns: repeat(2, 1fr); }
       .tours-grid { grid-template-columns: repeat(2, 1fr); }
-      .tours-grid-reversed { grid-template-columns: repeat(2, 1fr); }
-      .tours-grid-reversed .tour-card:nth-child(1) { order: 1; }
-      .tours-grid-reversed .tour-card:nth-child(2) { order: 2; }
-      .tours-grid-reversed .tour-card:nth-child(3) { order: 3; }
-      .tours-grid-reversed .tour-card:nth-child(4) { order: 4; }
-      .tours-grid-reversed .tour-card:nth-child(5) { order: 5; }
+      .tours-grid-reversed {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+      }
+      .tours-grid-reversed .tour-card-big {
+        grid-column: 1 / 3;
+        grid-row: 1 / 2;
+        min-height: 200px;
+      }
+      .tours-grid-reversed .tour-card-small-top {
+        grid-column: 1 / 2;
+        grid-row: 2 / 3;
+      }
+      .tours-grid-reversed .tour-card-small-top-right {
+        grid-column: 2 / 3;
+        grid-row: 2 / 3;
+      }
+      .tours-grid-reversed .tour-card-small-bottom {
+        grid-column: 1 / 2;
+        grid-row: 3 / 4;
+      }
+      .tours-grid-reversed .tour-card-small-bottom-right {
+        grid-column: 2 / 3;
+        grid-row: 3 / 4;
+      }
       .tour-tall { grid-row: span 1; }
       .gallery-grid { grid-template-columns: repeat(2, 1fr); }
       .about-grid { grid-template-columns: 1fr; }
@@ -451,22 +487,7 @@
     </div>
   </section>
 
-  <!-- 2. Список туров -->
-  <section id="tours-list" class="tours-list-section">
-    <div class="container">
-      <h2>Выберите тур</h2>
-      <p class="subtitle">Нажмите на тур, чтобы выбрать его, затем заполните форму ниже для бронирования</p>
-      
-      <div class="tours-list" id="toursList">
-        <!-- Тур 1 -->
-        <div class="tour-item" data-tour="Глубокое в глубинку" data-date="2026-07-15" data-price="180 BYN">
-          <span class="tour-badge">Популярный</span>
-          <h3>Глубокое в глубинку</h3>
-          <div class="tour-date">15 июля 2026</div>
-          <div class="tour-description">Погрузитесь в атмосферу белорусской глубинки. Посетите старинные усадьбы, прогуляйтесь по живописным озёрам и узнайте тайны местных легенд.</div>
-          <div class="tour-price">от 180 BYN</div>
-          <button class="tour-select-btn" onclick="selectTour(this, 'Глубокое в глубинку', '2026-07-15')">Выбрать тур</button>
-        </div>
+ 
 
         <!-- Тур 2 -->
         <div class="tour-item" data-tour="Классика Гродно" data-date="2026-07-20" data-price="200 BYN">
@@ -567,10 +588,10 @@
         </div>
       </div>
 
-      <!-- Вторая сетка (следующие 5 туров — зеркальное отражение) -->
+      <!-- Вторая сетка (большая слева, 4 маленькие справа) -->
       <div class="tours-grid-reversed">
-        <!-- Большая карточка слева (будет отображаться первой по порядку, но в сетке окажется слева) -->
-        <div class="tour-card tour-tall tour-wide">
+        <!-- Большая карточка слева -->
+        <div class="tour-card tour-card-big">
           <img src="заказники.jpg" alt="Беловежская Пуща">
           <div class="tour-card-content">
             <h3>Заказники и города: Беловежская Пуща и её соседи</h3>
@@ -578,20 +599,20 @@
             <span class="tour-price">от 300 BYN</span>
           </div>
         </div>
-        <!-- Маленькие карточки справа -->
-        <div class="tour-card">
+        <!-- Маленькие карточки справа (2 сверху, 2 снизу) -->
+        <div class="tour-card tour-card-small-top">
           <img src="ошмяны.png" alt="Ошмяны">
           <div class="tour-card-content"><h3>Ошмяны: край храмов и вишнёвых садов</h3><span class="tour-price">от 100 BYN</span></div>
         </div>
-        <div class="tour-card">
+        <div class="tour-card tour-card-small-top-right">
           <img src="мозырь.png" alt="Мозырь">
           <div class="tour-card-content"><h3>Мозырь на Днепре</h3><span class="tour-price">от 110 BYN</span></div>
         </div>
-        <div class="tour-card">
+        <div class="tour-card tour-card-small-bottom">
           <img src="солигорск.jpg" alt="Солигорск">
           <div class="tour-card-content"><h3>Солигорск: от белых солнц до изумрудных озер</h3><span class="tour-price">от 200 BYN</span></div>
         </div>
-        <div class="tour-card">
+        <div class="tour-card tour-card-small-bottom-right">
           <img src="верхнедвинск.jpg" alt="Верхнедвинск">
           <div class="tour-card-content"><h3>Верхнедвинск: где начинается Двина</h3><span class="tour-price">от 160 BYN</span></div>
         </div>
@@ -650,6 +671,23 @@
       </div>
     </div>
   </section>
+
+ <!-- 2. Список туров -->
+  <section id="tours-list" class="tours-list-section">
+    <div class="container">
+      <h2>Выберите тур</h2>
+      <p class="subtitle">Нажмите на тур, чтобы выбрать его, затем заполните форму ниже для бронирования</p>
+      
+      <div class="tours-list" id="toursList">
+        <!-- Тур 1 -->
+        <div class="tour-item" data-tour="Глубокое в глубинку" data-date="2026-07-15" data-price="180 BYN">
+          <span class="tour-badge">Популярный</span>
+          <h3>Глубокое в глубинку</h3>
+          <div class="tour-date">15 июля 2026</div>
+          <div class="tour-description">Погрузитесь в атмосферу белорусской глубинки. Посетите старинные усадьбы, прогуляйтесь по живописным озёрам и узнайте тайны местных легенд.</div>
+          <div class="tour-price">от 180 BYN</div>
+          <button class="tour-select-btn" onclick="selectTour(this, 'Глубокое в глубинку', '2026-07-15')">Выбрать тур</button>
+        </div>
   
   <!-- CONTACT -->
   <section class="contact" id="contact">
