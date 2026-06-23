@@ -6,9 +6,9 @@
   <title>Вандралюбы — Туры по Беларуси</title>
   <meta name="description" content="Турагентство Вандралюбы — авторские туры по Беларуси. Исследуйте замки, природу и культуру с нами.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-<style>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
       --primary: hsl(33, 38%, 49%);
@@ -165,181 +165,103 @@
     }
    
     .hero-btn:hover { opacity: 0.9; }
-    /* Раздел с датами */
-       
-      .calendar-section {
-    width: 100%;
-    max-width: 750px;
-    text-align: center;
-    margin-left: 400px;
-    margin-top: 30px;
-    margin-bottom: 30px;
-  }
-  .calendar-section h2 {
-    font-family: 'PT Serif', serif;
-    font-size: 32px;
-    font-weight: 700;
-    color: #222;
-    margin-bottom: 32px;
-  }
-  .calendar-card {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 5px 16px rgba(0,0,0,0.07);
-    padding: 32px 36px;
-    display: flex;
-    gap: 40px;
-    align-items: flex-start;
-  }
-  .quick-filters {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 180px;
-    padding-top: 4px;
-  }
-  .quick-filters button {
-    background: none;
-    border: none;
-    font-family: 'Source Sans 3', sans-serif;
-    font-size: 14px;
-    color: #555;
-    text-align: left;
-    padding: 6px 0;
-    cursor: pointer;
-    transition: color 0.2s;
-    white-space: nowrap;
-  }
-  .quick-filters button:hover,
-  .quick-filters button.active {
-    color: #b5893a;
-    font-weight: 600;
-  }
-  .calendar-right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .month-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    margin-bottom: 16px;
-    width: 100%;
-  }
-  .month-nav button {
-    background: none;
-    border: none;
-    font-size: 18px;
-    color: #b5893a;
-    cursor: pointer;
-    padding: 4px 8px;
-    line-height: 1;
-    transition: color 0.2s;
-  }
-  .month-nav button:hover { color: #8a6828; }
-  .month-nav .month-label {
-    font-family: 'Source Sans 3', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: #222;
-    min-width: 130px;
-    text-align: center;
-  }
-  .calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 36px);
-    gap: 2px;
-    justify-content: center;
-  }
-  .calendar-grid .day-header {
-    font-size: 12px;
-    font-weight: 600;
-    color: #999;
-    text-align: center;
-    padding: 4px 0 8px;
-    text-transform: uppercase;
-  }
-  .calendar-grid .day-cell {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    color: #333;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-  }
-  .calendar-grid .day-cell:hover { background: #f0e6d6; }
-  .calendar-grid .day-cell.outside { color: #ccc; cursor: default; }
-  .calendar-grid .day-cell.outside:hover { background: none; }
-  .calendar-grid .day-cell.today { background: #e8dcc8; font-weight: 600; color: #222; }
-  .calendar-grid .day-cell.selected { background: #b5893a; color: #fff; font-weight: 600; }
-  .calendar-grid .day-cell.weekend { color: #b5893a; }
-  .calendar-grid .day-cell.outside.weekend { color: #d9c9a8; }
-  .calendar-actions {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 24px;
-  }
-  .btn-cancel {
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 500;
-    padding: 10px 28px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background: #fff;
-    color: #555;
-    cursor: pointer;
-    transition: border-color 0.2s;
-  }
-  .btn-cancel:hover { border-color: #999; }
-  .btn-select {
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 600;
-    padding: 10px 28px;
-    border: none;
-    border-radius: 8px;
-    background: #b5893a;
-    color: #fff;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .btn-select:hover { background: #9a7430; }
-  @media (max-width: 600px) {
-    .calendar-card {
-      flex-direction: column;
-      padding: 24px 20px;
-      gap: 24px;
+    
+    /* ===== TOURS LIST SECTION ===== */
+    .tours-list-section {
+      padding: 4rem 0;
+      background: var(--bg);
     }
-    .quick-filters {
-      flex-direction: row;
-      flex-wrap: wrap;
-      min-width: auto;
-      gap: 4px 16px;
+    .tours-list-section h2 {
+      text-align: center;
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      font-family: var(--font-display);
     }
-  }
-
-        /* список принципов и особенностей */
-        .features-list {
-            list-style: none;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-        }
-        .features-list li {
-            background-color: #bdbdbd;
-            padding: 15px 20px;
-            border-left: 6px solid #333;
-            box-shadow: 2px 2px 0 #5a5a5a;
-        }
+    .tours-list-section .subtitle {
+      text-align: center;
+      color: var(--muted-fg);
+      margin-bottom: 2.5rem;
+      font-size: 1.1rem;
+    }
+    .tours-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .tour-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .tour-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      border-color: var(--primary);
+    }
+    .tour-item.selected {
+      border-color: var(--primary);
+      background: #fdf8f0;
+      box-shadow: 0 0 0 3px rgba(181, 137, 58, 0.2);
+    }
+    .tour-item .tour-badge {
+      position: absolute;
+      top: -8px;
+      right: 12px;
+      background: var(--primary);
+      color: #fff;
+      padding: 2px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .tour-item h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      color: var(--foreground);
+    }
+    .tour-item .tour-date {
+      font-size: 0.9rem;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .tour-item .tour-description {
+      font-size: 0.9rem;
+      color: var(--muted-fg);
+      line-height: 1.5;
+      margin-bottom: 0.5rem;
+    }
+    .tour-item .tour-price {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--foreground);
+    }
+    .tour-item .tour-select-btn {
+      margin-top: 0.8rem;
+      padding: 6px 20px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: var(--font-body);
+    }
+    .tour-item .tour-select-btn:hover {
+      background: var(--primary-hover);
+    }
+    .tour-item .tour-select-btn.selected {
+      background: #2e7d32;
+    }
 
     /* ===== FEATURES ===== */
     .features { background: var(--gallery-bg); padding: 4rem 0; }
@@ -418,9 +340,23 @@
       cursor: pointer; transition: opacity 0.2s;
     }
     .submit-btn:hover { opacity: 0.9; }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .consent { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--muted-fg); cursor: pointer; }
     .consent input { width: 16px; height: 16px; }
     .consent span { text-decoration: underline; }
+    .selected-tour-info {
+      background: #fdf8f0;
+      border: 1px solid var(--primary);
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin-bottom: 1rem;
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--foreground);
+    }
+    .selected-tour-info strong {
+      color: var(--primary);
+    }
     /* ===== FOOTER ===== */
     .footer { background: var(--footer-bg); color: var(--footer-fg); padding: 4rem 0; }
     .footer-logo { display: flex; justify-content: center; margin-bottom: 2.5rem; }
@@ -444,6 +380,7 @@
       .form-row { grid-template-columns: 1fr; }
       .form-actions { flex-direction: column; align-items: flex-start; }
       .footer-grid { grid-template-columns: 1fr; }
+      .tours-list { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -483,115 +420,76 @@
       <h1>Туры по Беларуси</h1>
       <p>Путешествие по Беларуси — это погружение в гармонию природы и богатейшего культурного наследия. Мы, «Вандралюбы», создаём маршруты, которые открывают всю глубину и красоту этой удивительной страны.</p>
       <p>Начните с короткой экскурсии на выходные или отправьтесь в большое путешествие по всем регионам — мы с любовью покажем вам нашу Беларусь.</p>
-      <a href="#calendar" class="hero-btn">Забронировать</a>
+      <a href="#tours-list" class="hero-btn">Выбрать тур</a>
     </div>
   </section>
 
-  <!-- 2. Выберите дату тура -->
-    
-  <div id="calendar" class="calendar-section">
-  <h2>Выберите дату тура</h2>
-  <div class="calendar-card">
-    <div class="quick-filters">
-      <button onclick="setQuickFilter(7, this)">На ближайшие 7 дней</button>
-      <button onclick="setQuickFilter(14, this)">На ближайшие 14 дней</button>
-      <button onclick="setQuickFilter(30, this)">На ближайшие 30 дней</button>
-      <button onclick="setQuickFilter(90, this)">На ближайшие 3 месяца</button>
-      <button onclick="setQuickFilter(180, this)">На ближайшие полгода</button>
-      <button class="active" onclick="setQuickFilter(0, this)">Выбрать период</button>
-    </div>
-    <div class="calendar-right">
-      <div class="month-nav">
-        <button onclick="changeMonth(-1)">←</button>
-        <span class="month-label" id="monthLabel"></span>
-        <button onclick="changeMonth(1)">→</button>
+  <!-- 2. Список туров -->
+  <section id="tours-list" class="tours-list-section">
+    <div class="container">
+      <h2>📍 Выберите тур</h2>
+      <p class="subtitle">Нажмите на тур, чтобы выбрать его, затем заполните форму ниже для бронирования</p>
+      
+      <div class="tours-list" id="toursList">
+        <!-- Тур 1 -->
+        <div class="tour-item" data-tour="Глубокое в глубинку" data-date="2026-07-15" data-price="180 BYN">
+          <span class="tour-badge">Популярный</span>
+          <h3>Глубокое в глубинку</h3>
+          <div class="tour-date">📅 15 июля 2026</div>
+          <div class="tour-description">Погрузитесь в атмосферу белорусской глубинки. Посетите старинные усадьбы, прогуляйтесь по живописным озёрам и узнайте тайны местных легенд.</div>
+          <div class="tour-price">💰 от 180 BYN</div>
+          <button class="tour-select-btn" onclick="selectTour(this, 'Глубокое в глубинку', '2026-07-15')">Выбрать тур</button>
+        </div>
+
+        <!-- Тур 2 -->
+        <div class="tour-item" data-tour="Классика Гродно" data-date="2026-07-20" data-price="200 BYN">
+          <h3>Классика Гродно</h3>
+          <div class="tour-date">📅 20 июля 2026</div>
+          <div class="tour-description">Уютные улочки, величественные храмы и уникальная атмосфера одного из самых красивых городов Беларуси. Экскурсия с погружением в историю.</div>
+          <div class="tour-price">💰 от 200 BYN</div>
+          <button class="tour-select-btn" onclick="selectTour(this, 'Классика Гродно', '2026-07-20')">Выбрать тур</button>
+        </div>
+
+        <!-- Тур 3 -->
+        <div class="tour-item" data-tour="Брестская крепость" data-date="2026-07-25" data-price="130 BYN">
+          <span class="tour-badge">Исторический</span>
+          <h3>Брестская крепость</h3>
+          <div class="tour-date">📅 25 июля 2026</div>
+          <div class="tour-description">Посетите легендарную крепость-герой. Узнайте историю обороны, прогуляйтесь по мемориальному комплексу и почувствуйте дух мужества.</div>
+          <div class="tour-price">💰 от 130 BYN</div>
+          <button class="tour-select-btn" onclick="selectTour(this, 'Брестская крепость', '2026-07-25')">Выбрать тур</button>
+        </div>
+
+        <!-- Тур 4 -->
+        <div class="tour-item" data-tour="Исследование Полесья" data-date="2026-08-01" data-price="120 BYN">
+          <h3>Исследование Полесья: дремлющие болота</h3>
+          <div class="tour-date">📅 1 августа 2026</div>
+          <div class="tour-description">Уникальная экскурсия в сердце белорусского Полесья. Болота, редкие птицы, древние традиции и загадочные топи — для настоящих искателей приключений.</div>
+          <div class="tour-price">💰 от 120 BYN</div>
+          <button class="tour-select-btn" onclick="selectTour(this, 'Исследование Полесья', '2026-08-01')">Выбрать тур</button>
+        </div>
+
+        <!-- Тур 5 -->
+        <div class="tour-item" data-tour="Сердце белорусской глубинки" data-date="2026-08-10" data-price="350 BYN">
+          <span class="tour-badge">Комбо-тур</span>
+          <h3>Сердце белорусской глубинки</h3>
+          <div class="tour-date">📅 10 августа 2026</div>
+          <div class="tour-description">Трёхдневное путешествие по самым аутентичным местам Беларуси. Верхнедвинск, Глубокое, Барановичи — вы увидите страну без прикрас.</div>
+          <div class="tour-price">💰 от 350 BYN</div>
+          <button class="tour-select-btn" onclick="selectTour(this, 'Сердце белорусской глубинки', '2026-08-10')">Выбрать тур</button>
+        </div>
+
+        <!-- Тур 6 -->
+        <div class="tour-item" data-tour="Беловежская Пуща" data-date="2026-08-15" data-price="300 BYN">
+          <h3>Заказники и города: Беловежская Пуща</h3>
+          <div class="tour-date">📅 15 августа 2026</div>
+          <div class="tour-description">Двухдневный тур к самому известному заповеднику Беларуси. Знакомство с зубром, поход по лесу и экскурсия в окрестные города.</div>
+          <div class="tour-price">💰 от 300 BYN</div>
+          <button class="tour-select-btn" onclick="selectTour(this, 'Беловежская Пуща', '2026-08-15')">Выбрать тур</button>
+        </div>
       </div>
-      <div class="calendar-grid" id="calendarGrid"></div>
-      <div class="calendar-actions">
-        <button class="btn-cancel" onclick="clearSelection()">Отменить</button>
-        <button class="btn-select" onclick="confirmSelection()">Выбрать</button>
-      </div>
     </div>
-  </div>
-</div>
-<script>
-  const MONTHS_RU = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-  const DAYS_SHORT = ['S','M','T','W','T','F','S'];
-  let currentDate = new Date();
-  let viewYear = currentDate.getFullYear();
-  let viewMonth = currentDate.getMonth();
-  let selectedDate = null;
-  function renderCalendar() {
-    const grid = document.getElementById('calendarGrid');
-    document.getElementById('monthLabel').textContent = MONTHS_RU[viewMonth] + ' ' + viewYear;
-    grid.innerHTML = '';
-    DAYS_SHORT.forEach(d => {
-      const el = document.createElement('div');
-      el.className = 'day-header';
-      el.textContent = d;
-      grid.appendChild(el);
-    });
-    const firstDay = new Date(viewYear, viewMonth, 1).getDay();
-    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-    const prevDays = new Date(viewYear, viewMonth, 0).getDate();
-    for (let i = firstDay - 1; i >= 0; i--) {
-      const el = document.createElement('div');
-      el.className = 'day-cell outside';
-      const dow = firstDay - 1 - i;
-      if (dow === 0 || dow === 6) el.classList.add('weekend');
-      el.textContent = prevDays - i;
-      grid.appendChild(el);
-    }
-    const today = new Date();
-    for (let d = 1; d <= daysInMonth; d++) {
-      const el = document.createElement('div');
-      el.className = 'day-cell';
-      const dow = (firstDay + d - 1) % 7;
-      if (dow === 0 || dow === 6) el.classList.add('weekend');
-      if (d === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear()) el.classList.add('today');
-      if (selectedDate && d === selectedDate.getDate() && viewMonth === selectedDate.getMonth() && viewYear === selectedDate.getFullYear()) el.classList.add('selected');
-      el.textContent = d;
-      el.onclick = () => selectDay(d);
-      grid.appendChild(el);
-    }
-    const totalCells = firstDay + daysInMonth;
-    const remaining = (7 - (totalCells % 7)) % 7;
-    for (let i = 1; i <= remaining; i++) {
-      const el = document.createElement('div');
-      el.className = 'day-cell outside';
-      const dow = (totalCells + i - 1) % 7;
-      if (dow === 0 || dow === 6) el.classList.add('weekend');
-      el.textContent = i;
-      grid.appendChild(el);
-    }
-  }
-  function changeMonth(dir) {
-    viewMonth += dir;
-    if (viewMonth > 11) { viewMonth = 0; viewYear++; }
-    if (viewMonth < 0) { viewMonth = 11; viewYear--; }
-    renderCalendar();
-  }
-  function selectDay(d) {
-    selectedDate = new Date(viewYear, viewMonth, d);
-    renderCalendar();
-  }
-  function clearSelection() { selectedDate = null; renderCalendar(); }
-  function confirmSelection() {
-    if (selectedDate) alert('Выбрана дата: ' + selectedDate.toLocaleDateString('ru-RU'));
-  }
-  function setQuickFilter(days, btn) {
-    document.querySelectorAll('.quick-filters button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    if (days > 0) {
-      selectedDate = new Date();
-      selectedDate.setDate(selectedDate.getDate() + days);
-      viewMonth = selectedDate.getMonth();
-      viewYear = selectedDate.getFullYear();
-    }
-    renderCalendar();
-  }
-  renderCalendar();
-</script>
+  </section>
 
   <!-- FEATURES -->
   <section class="features">
@@ -608,7 +506,8 @@
       </div>
     </div>
   </section>
-  <!-- TOURS -->
+  
+  <!-- TOURS (мини-галерея) -->
   <section class="tours" id="tours">
     <div class="container">
       <h2>Популярные предложения</h2>
@@ -638,34 +537,9 @@
           <div class="tour-card-content"><h3>Исследование Полесья: дремлющие болота</h3><span class="tour-price">от 120 BYN</span></div>
         </div>
       </div>
-      <div class="tours-grid">
-        <div class="tour-card tour-tall tour-wide">
-          <img src="reserves.jpg" alt="Беловежская Пуща">
-          <div class="tour-card-content">
-            <h3>Заказники и города: Беловежская Пуща и её соседи</h3>
-            <span class="tour-sub">Брест · Скидель · реки, леса и заказники</span>
-            <span class="tour-price">от 300 BYN</span>
-          </div>
-        </div>
-        <div class="tour-card">
-          <img src="oshmyany.jpg" alt="Ошмяны">
-          <div class="tour-card-content"><h3>Ошмяны: край храмов и вишнёвых садов</h3><span class="tour-price">от 100 BYN</span></div>
-        </div>
-        <div class="tour-card">
-          <img src="mozyr.png" alt="Мозырь">
-          <div class="tour-card-content"><h3>Мозырь на Днепре</h3><span class="tour-price">от 110 BYN</span></div>
-        </div>
-        <div class="tour-card">
-          <img src="soligorsk.jpg" alt="Солигорск">
-          <div class="tour-card-content"><h3>Солигорск: от белых солнц до изумрудных озер</h3><span class="tour-price">от 200 BYN</span></div>
-        </div>
-        <div class="tour-card">
-          <img src="verhnedvinsk.jpg" alt="Верхнедвинск">
-          <div class="tour-card-content"><h3>Верхнедвинск: где начинается Двина</h3><span class="tour-price">от 160 BYN</span></div>
-        </div>
-      </div>
     </div>
   </section>
+  
   <!-- GALLERY -->
   <section class="gallery" id="gallery">
     <div class="container">
@@ -683,6 +557,7 @@
       </div>
     </div>
   </section>
+  
   <!-- ABOUT -->
   <section class="about" id="about">
     <div class="container">
@@ -718,27 +593,33 @@
   </section>
   
   <!-- CONTACT -->
-<section class="contact" id="contact">
-  <div class="container">
-    <h2>Забронируйте отдых с "Вандралюбами"</h2>
-    <form class="contact-form" id="bookingForm">
-      <div class="form-row">
-        <input type="text" id="userName" placeholder="Ваше имя" required>
-        <input type="tel" id="userPhone" placeholder="Телефон" required>
-        <input type="email" id="userEmail" placeholder="E-mail" required>
-      </div>
-      <textarea rows="4" id="userComment" placeholder="Комментарий"></textarea>
-      <div class="form-actions">
-        <button type="submit" class="submit-btn" id="submitBtn">Отправить заявку</button>
-        <label class="consent">
-          <input type="checkbox" id="consentCheckbox" required>
-          <span>Согласие на обработку персональных данных</span>
-        </label>
-      </div>
-      <div id="formMessage" style="margin-top: 15px; display: none;"></div>
-    </form>
-  </div>
-</section>
+  <section class="contact" id="contact">
+    <div class="container">
+      <h2>Забронируйте отдых с "Вандралюбами"</h2>
+      <form class="contact-form" id="bookingForm">
+        <!-- Блок с выбранным туром -->
+        <div id="selectedTourInfo" class="selected-tour-info" style="display: none;">
+          Выбран тур: <strong id="selectedTourName">—</strong> 
+          (<span id="selectedTourDate">—</span>)
+        </div>
+        
+        <div class="form-row">
+          <input type="text" id="userName" placeholder="Ваше имя" required>
+          <input type="tel" id="userPhone" placeholder="Телефон" required>
+          <input type="email" id="userEmail" placeholder="E-mail" required>
+        </div>
+        <textarea rows="4" id="userComment" placeholder="Комментарий (дополнительные пожелания)"></textarea>
+        <div class="form-actions">
+          <button type="submit" class="submit-btn" id="submitBtn">Отправить заявку</button>
+          <label class="consent">
+            <input type="checkbox" id="consentCheckbox" required>
+            <span>Согласие на обработку персональных данных</span>
+          </label>
+        </div>
+        <div id="formMessage" style="margin-top: 15px; display: none;"></div>
+      </form>
+    </div>
+  </section>
   
   <!-- FOOTER -->
   <footer class="footer">
@@ -773,99 +654,144 @@
   </footer>
   
   <script>
-// Функция для отправки бронирования
-async function submitBooking(event) {
-  event.preventDefault();
-  
-  const name = document.getElementById('userName').value.trim();
-  const phone = document.getElementById('userPhone').value.trim();
-  const email = document.getElementById('userEmail').value.trim();
-  const comment = document.getElementById('userComment').value.trim();
-  const consent = document.getElementById('consentCheckbox').checked;
-  const submitBtn = document.getElementById('submitBtn');
-  const formMessage = document.getElementById('formMessage');
-  
-  // Проверка согласия
-  if (!consent) {
-    formMessage.style.display = 'block';
-    formMessage.style.color = 'red';
-    formMessage.textContent = 'Пожалуйста, дайте согласие на обработку персональных данных';
-    return;
-  }
-  
-  // Проверка обязательных полей
-  if (!name || !phone || !email) {
-    formMessage.style.display = 'block';
-    formMessage.style.color = 'red';
-    formMessage.textContent = 'Пожалуйста, заполните имя, телефон и email';
-    return;
-  }
-  
-  // Блокируем кнопку и показываем загрузку
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Отправка...';
-  formMessage.style.display = 'block';
-  formMessage.style.color = '#666';
-  formMessage.textContent = 'Отправляем заявку...';
-  
-  // Получаем выбранную дату из календаря
-  let tourDate = null;
-  if (selectedDate) {
-    tourDate = selectedDate.toISOString().split('T')[0];
-  }
-  
-  try {
-    const response = await fetch('/api/booking', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: name,
-        phone: phone,
-        email: email,
-        tourDate: tourDate,
-        comment: comment
-      })
-    });
-    
-    const result = await response.json();
-    
-    if (result.success) {
-      formMessage.style.color = 'green';
-      formMessage.textContent = result.message;
-      document.getElementById('bookingForm').reset();
-      clearSelection(); // Очищаем выбранную дату в календаре
-    } else {
-      formMessage.style.color = 'red';
-      formMessage.textContent = result.error;
+    // Переменные для хранения выбранного тура
+    let selectedTour = null;
+    let selectedTourName = '';
+    let selectedTourDate = '';
+
+    // Функция выбора тура
+    function selectTour(button, tourName, tourDate) {
+      // Убираем выделение со всех туров
+      document.querySelectorAll('.tour-item').forEach(item => {
+        item.classList.remove('selected');
+      });
+      document.querySelectorAll('.tour-select-btn').forEach(btn => {
+        btn.classList.remove('selected');
+        btn.textContent = 'Выбрать тур';
+      });
+
+      // Выделяем выбранный тур
+      const parentItem = button.closest('.tour-item');
+      parentItem.classList.add('selected');
+      button.classList.add('selected');
+      button.textContent = '✅ Выбран';
+
+      // Сохраняем данные
+      selectedTourName = tourName;
+      selectedTourDate = tourDate;
+      selectedTour = { name: tourName, date: tourDate };
+
+      // Показываем информацию о выбранном туре
+      const infoDiv = document.getElementById('selectedTourInfo');
+      infoDiv.style.display = 'block';
+      document.getElementById('selectedTourName').textContent = tourName;
+      document.getElementById('selectedTourDate').textContent = tourDate;
+
+      // Прокручиваем к форме
+      document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth' });
     }
-  } catch (error) {
-    console.error('Error:', error);
-    formMessage.style.color = 'red';
-    formMessage.textContent = 'Ошибка соединения. Пожалуйста, попробуйте позже.';
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Отправить заявку';
-  }
-}
 
-// Обновляем функцию confirmSelection для календаря
-const originalConfirmSelection = confirmSelection;
-confirmSelection = function() {
-  if (selectedDate) {
-    const formattedDate = selectedDate.toLocaleDateString('ru-RU');
-    alert('Выбрана дата: ' + formattedDate + '\n\nТеперь заполните форму бронирования ниже и нажмите "Отправить заявку"');
-    
-    // Прокручиваем к форме
-    document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth' });
-  } else {
-    alert('Пожалуйста, выберите дату тура в календаре');
-  }
-}
+    // Функция для отправки бронирования
+    async function submitBooking(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('userName').value.trim();
+      const phone = document.getElementById('userPhone').value.trim();
+      const email = document.getElementById('userEmail').value.trim();
+      const comment = document.getElementById('userComment').value.trim();
+      const consent = document.getElementById('consentCheckbox').checked;
+      const submitBtn = document.getElementById('submitBtn');
+      const formMessage = document.getElementById('formMessage');
+      
+      // Проверка согласия
+      if (!consent) {
+        formMessage.style.display = 'block';
+        formMessage.style.color = 'red';
+        formMessage.textContent = 'Пожалуйста, дайте согласие на обработку персональных данных';
+        return;
+      }
+      
+      // Проверка обязательных полей
+      if (!name || !phone || !email) {
+        formMessage.style.display = 'block';
+        formMessage.style.color = 'red';
+        formMessage.textContent = 'Пожалуйста, заполните имя, телефон и email';
+        return;
+      }
 
-// Назначаем обработчик на форму
-document.getElementById('bookingForm').addEventListener('submit', submitBooking);
-</script>
+      // Проверка выбранного тура
+      if (!selectedTour) {
+        formMessage.style.display = 'block';
+        formMessage.style.color = 'red';
+        formMessage.textContent = 'Пожалуйста, сначала выберите тур из списка выше';
+        return;
+      }
+      
+      // Блокируем кнопку и показываем загрузку
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Отправка...';
+      formMessage.style.display = 'block';
+      formMessage.style.color = '#666';
+      formMessage.textContent = 'Отправляем заявку...';
+      
+      try {
+        // Добавляем название тура в комментарий, если поле пустое
+        let fullComment = comment;
+        if (!fullComment) {
+          fullComment = `Тур: ${selectedTourName}`;
+        } else {
+          fullComment = `${comment}\nТур: ${selectedTourName}`;
+        }
+
+        const response = await fetch('/api/booking', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: name,
+            phone: phone,
+            email: email,
+            tourDate: selectedTourDate,
+            comment: fullComment
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          formMessage.style.color = 'green';
+          formMessage.textContent = result.message || '✅ Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.';
+          document.getElementById('bookingForm').reset();
+          
+          // Сбрасываем выбранный тур
+          document.querySelectorAll('.tour-item').forEach(item => {
+            item.classList.remove('selected');
+          });
+          document.querySelectorAll('.tour-select-btn').forEach(btn => {
+            btn.classList.remove('selected');
+            btn.textContent = 'Выбрать тур';
+          });
+          document.getElementById('selectedTourInfo').style.display = 'none';
+          selectedTour = null;
+          selectedTourName = '';
+          selectedTourDate = '';
+        } else {
+          formMessage.style.color = 'red';
+          formMessage.textContent = result.error || 'Ошибка при отправке. Попробуйте ещё раз.';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        formMessage.style.color = 'red';
+        formMessage.textContent = 'Ошибка соединения. Пожалуйста, попробуйте позже.';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Отправить заявку';
+      }
+    }
+
+    // Назначаем обработчик на форму
+    document.getElementById('bookingForm').addEventListener('submit', submitBooking);
+  </script>
 </body>
 </html>
