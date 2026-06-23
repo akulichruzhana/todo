@@ -917,7 +917,7 @@ async function cancelBooking(bookingId, button) {
           // Для активных бронирований показываем кнопки
           actionsHTML = `
             <button class="btn-action cancel" onclick="cancelBooking(${booking.id}, this)">✕ Отменить</button>
-            <button class="btn-action guide" onclick="openGuideModal('${tourName}')">👤 Гид</button>
+            <button class="btn-action guide" onclick="openGuideModal('${tourName}')">Подробнее о гиде</button>
           `;
         }
 
