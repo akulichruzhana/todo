@@ -615,7 +615,7 @@
     // Проверка валидности сессии
     function checkSession() {
       const userData = localStorage.getItem(USER_STORAGE_KEY);
-      const sessionExpiry = localStorage.getItem(SESSION_EXPIRY_KEY);
+     
       
       // Если нет данных пользователя - перенаправляем на вход
       if (!userData) {
@@ -623,21 +623,7 @@
         return;
       }
 
-      // Проверяем истечение сессии
-      if (sessionExpiry) {
-        const expiryTime = parseInt(sessionExpiry);
-        const currentTime = Date.now();
-        
-        if (currentTime > expiryTime) {
-          // Сессия истекла
-          clearSession();
-          redirectToLogin();
-          return;
-        }
-      } else {
-        // Если нет метки времени, устанавливаем новую
-        extendSession();
-      }
+     
 
       try {
         const user = JSON.parse(userData);
@@ -955,33 +941,6 @@ async function cancelBooking(bookingId, button) {
       }
     });
 
-    // Автоматическое продление сессии при активности пользователя
-    let sessionExtendTimer = null;
-    
-    function resetSessionTimer() {
-      if (sessionExtendTimer) {
-        clearTimeout(sessionExtendTimer);
-      }
-      extendSession();
-      sessionExtendTimer = setTimeout(() => {
-        checkSession();
-      }, 30 * 60 * 1000);
-    }
-
-    document.addEventListener('click', resetSessionTimer);
-    document.addEventListener('keydown', resetSessionTimer);
-    document.addEventListener('scroll', resetSessionTimer);
-    document.addEventListener('mousemove', resetSessionTimer);
-
-    setInterval(() => {
-      checkSession();
-    }, 5 * 60 * 1000);
-
-    document.addEventListener('visibilitychange', function() {
-      if (!document.hidden) {
-        checkSession();
-      }
-    });
   </script>
 </body>
 </html>
