@@ -223,39 +223,53 @@
       margin-top: 2px;
       font-style: italic;
     }
-    .booking-status {
-      padding: 4px 14px;
+    .booking-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-action {
+      padding: 6px 16px;
+      border: none;
       border-radius: 20px;
       font-size: 13px;
-      font-weight: 500;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+      white-space: nowrap;
     }
-    .booking-status.confirmed {
-      background: #e3f2fd;
-      color: #1565c0;
-    }
-    .booking-status.pending {
-      background: #fff3e0;
-      color: #e65100;
-    }
-    .booking-status.completed {
-      background: #e8f5e9;
-      color: #2e7d32;
-    }
-    .booking-status.cancelled {
+    .btn-action.cancel {
       background: #ffebee;
       color: #c62828;
     }
-    .booking-status.new {
-      background: #f3e5f5;
-      color: #7b1fa2;
+    .btn-action.cancel:hover {
+      background: #c62828;
+      color: #fff;
     }
-    .booking-id {
-      padding: 4px 14px;
+    .btn-action.cancel:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-action.guide {
       background: #e3f2fd;
       color: #1565c0;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 500;
+    }
+    .btn-action.guide:hover {
+      background: #1565c0;
+      color: #fff;
+    }
+    .btn-action.completed {
+      background: #e8f5e9;
+      color: #2e7d32;
+      cursor: default;
+    }
+    .btn-action.cancelled {
+      background: #f5f5f5;
+      color: #999;
+      cursor: default;
     }
     .empty-state {
       padding: 40px 24px;
@@ -288,6 +302,86 @@
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+    /* ===== MODAL ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal-content {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 32px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .modal-close:hover {
+      color: var(--foreground);
+    }
+    .modal-content h3 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+    .modal-content .guide-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      margin: 0 auto 16px;
+    }
+    .modal-content .guide-name {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .modal-content .guide-specialty {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    .modal-content .guide-bio {
+      color: var(--foreground);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    .modal-content .guide-bio strong {
+      color: var(--primary);
     }
     /* ===== FOOTER ===== */
     footer {
@@ -380,6 +474,9 @@
         flex-direction: column;
         text-align: center;
       }
+      .booking-actions {
+        justify-content: center;
+      }
     }
     @media (max-width: 480px) {
       .header {
@@ -454,6 +551,22 @@
       </div>
     </div>
   </main>
+
+  <!-- Modal для информации о гиде -->
+  <div class="modal-overlay" id="guideModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeGuideModal()">×</button>
+      <div class="guide-avatar" id="guideAvatar">А</div>
+      <div class="guide-name" id="guideName">Алексей Смирнов</div>
+      <div class="guide-specialty" id="guideSpecialty">Гид-краевед, историк</div>
+      <div class="guide-bio" id="guideBio">
+        <p><strong>Образование:</strong> Исторический факультет БГУ</p>
+        <p><strong>Опыт:</strong> Более 10 лет в туризме</p>
+        <p><strong>Интересные факты:</strong> Знает все тайные тропы Беларуси, коллекционирует старинные карты и умеет рассказывать истории так, что вы почувствуете себя частью прошлого.</p>
+        <p><strong>Языки:</strong> Белорусский, русский, английский</p>
+      </div>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer>
@@ -572,7 +685,6 @@
       const bookingsList = document.getElementById('bookingsList');
       
       try {
-        // Показываем загрузку
         bookingsList.innerHTML = `
           <div class="loading-state">
             <div class="spinner"></div>
@@ -580,7 +692,6 @@
           </div>
         `;
 
-        // Реальный запрос к API
         const response = await fetch(`/api/booking?email=${encodeURIComponent(email)}`, {
           method: 'GET',
           headers: {
@@ -588,10 +699,8 @@
           }
         });
         
-        // Проверяем ответ
         if (!response.ok) {
           if (response.status === 401) {
-            // Сессия не валидна
             clearSession();
             redirectToLogin();
             return;
@@ -624,7 +733,129 @@
       }
     }
 
-    // Отображение бронирований (с датой и названием тура)
+    // Функция для открытия модального окна с информацией о гиде
+    function openGuideModal(tourName) {
+      const modal = document.getElementById('guideModal');
+      
+      // Данные о гидах (можно расширить и хранить в БД)
+      const guides = {
+        'Беловежская Пуща': {
+          name: 'Алексей Смирнов',
+          specialty: 'Гид-краевед, историк',
+          avatar: 'А',
+          bio: `<p><strong>Образование:</strong> Исторический факультет БГУ</p>
+                <p><strong>Опыт:</strong> Более 10 лет в туризме</p>
+                <p><strong>Интересные факты:</strong> Знает все тайные тропы Беларуси, коллекционирует старинные карты и умеет рассказывать истории так, что вы почувствуете себя частью прошлого.</p>
+                <p><strong>Языки:</strong> Белорусский, русский, английский</p>`
+        },
+        'Классика Гродно': {
+          name: 'Екатерина Коваль',
+          specialty: 'Архитектурный гид',
+          avatar: 'Е',
+          bio: `<p><strong>Образование:</strong> Архитектурный факультет БНТУ</p>
+                <p><strong>Опыт:</strong> 8 лет в сфере экскурсий</p>
+                <p><strong>Интересные факты:</strong> Обожает готическую архитектуру, знает каждое здание в Гродно и может рассказать невероятные истории о строительстве.</p>
+                <p><strong>Языки:</strong> Русский, польский, английский</p>`
+        },
+        'Брестская крепость': {
+          name: 'Игорь Михайлов',
+          specialty: 'Военный историк',
+          avatar: 'И',
+          bio: `<p><strong>Образование:</strong> Военно-исторический факультет</p>
+                <p><strong>Опыт:</strong> 12 лет в военной истории</p>
+                <p><strong>Интересные факты:</strong> Проводит уникальные экскурсии по местам боевой славы, восстановил более 50 исторических событий по документам.</p>
+                <p><strong>Языки:</strong> Русский, белорусский</p>`
+        },
+        'default': {
+          name: 'Анна Петрова',
+          specialty: 'Профессиональный гид',
+          avatar: 'А',
+          bio: `<p><strong>Образование:</strong> Факультет международного туризма БГУ</p>
+                <p><strong>Опыт:</strong> 7 лет в туризме</p>
+                <p><strong>Интересные факты:</strong> Путешествовала по всему миру, но влюблена в Беларусь. Знает самые живописные маршруты и лучшие места для фото.</p>
+                <p><strong>Языки:</strong> Русский, английский, немецкий</p>`
+        }
+      };
+
+      // Ищем гида по названию тура
+      let guide = guides[tourName] || guides['default'];
+      
+      // Если не нашли по точному названию, ищем по ключевым словам
+      if (!guides[tourName]) {
+        for (const key of Object.keys(guides)) {
+          if (tourName.includes(key) || key.includes(tourName)) {
+            guide = guides[key];
+            break;
+          }
+        }
+      }
+
+      // Заполняем модальное окно
+      document.getElementById('guideAvatar').textContent = guide.avatar;
+      document.getElementById('guideName').textContent = guide.name;
+      document.getElementById('guideSpecialty').textContent = guide.specialty;
+      document.getElementById('guideBio').innerHTML = guide.bio;
+      
+      // Показываем модальное окно
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Функция для закрытия модального окна
+    function closeGuideModal() {
+      const modal = document.getElementById('guideModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Закрытие модального окна по клику вне его
+    document.getElementById('guideModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeGuideModal();
+      }
+    });
+
+    // Функция отмены бронирования
+    async function cancelBooking(bookingId, button) {
+      if (!confirm('Вы уверены, что хотите отменить это бронирование?')) {
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Отмена...';
+
+      try {
+        const response = await fetch(`/api/booking/${bookingId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          alert('Бронирование успешно отменено!');
+          // Перезагружаем список бронирований
+          const userData = localStorage.getItem(USER_STORAGE_KEY);
+          if (userData) {
+            const user = JSON.parse(userData);
+            loadUserBookings(user.email);
+          }
+        } else {
+          alert(result.error || 'Ошибка при отмене бронирования');
+          button.disabled = false;
+          button.textContent = 'Отменить';
+        }
+      } catch (error) {
+        console.error('Error cancelling booking:', error);
+        alert('Ошибка соединения. Попробуйте позже.');
+        button.disabled = false;
+        button.textContent = 'Отменить';
+      }
+    }
+
+    // Отображение бронирований (с кнопками вместо статуса и ID)
     function renderBookings(bookings) {
       const bookingsList = document.getElementById('bookingsList');
       
@@ -639,26 +870,15 @@
         return;
       }
 
-      // Маппинг статусов на русский язык
-      const statusMap = {
-        'new': 'Новое',
-        'confirmed': 'Подтверждено',
-        'pending': 'Ожидает',
-        'completed': 'Завершён',
-        'cancelled': 'Отменён'
-      };
-
       bookingsList.innerHTML = bookings.map(booking => {
         // Извлекаем название тура из комментария
         let tourName = 'Тур не указан';
         let comment = booking.comment || '';
         
-        // Если есть комментарий, пытаемся извлечь название тура
         if (comment) {
           const tourMatch = comment.match(/Тур:\s*(.+?)(?:\n|$)/);
           if (tourMatch) {
             tourName = tourMatch[1];
-            // Убираем название тура из комментария для отображения
             comment = comment.replace(/Тур:\s*.+?(?:\n|$)/, '').trim();
           }
         }
@@ -679,18 +899,31 @@
         }
 
         const status = booking.status || 'new';
-        const statusLabel = statusMap[status] || status;
+        
+        // Определяем, какие кнопки показывать
+        let actionsHTML = '';
+        
+        if (status === 'cancelled') {
+          actionsHTML = `<span class="btn-action cancelled">Отменено</span>`;
+        } else if (status === 'completed') {
+          actionsHTML = `<span class="btn-action completed">Завершено</span>`;
+        } else {
+          // Для активных бронирований показываем кнопки
+          actionsHTML = `
+            <button class="btn-action cancel" onclick="cancelBooking(${booking.id}, this)">✕ Отменить</button>
+            <button class="btn-action guide" onclick="openGuideModal('${tourName}')">👤 Гид</button>
+          `;
+        }
 
         return `
           <div class="booking-item">
             <div class="booking-info">
               <div class="booking-tour">Название тура: ${tourName}</div>
               <div class="booking-date">Дата: ${formattedDate}</div>
-              ${comment ? `<div class="booking-comment"> ${comment}</div>` : ''}
+              ${comment ? `<div class="booking-comment">${comment}</div>` : ''}
             </div>
-            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-              <span class="booking-status ${status}">${statusLabel}</span>
-              <span class="booking-id">#${booking.id}</span>
+            <div class="booking-actions">
+              ${actionsHTML}
             </div>
           </div>
         `;
@@ -723,28 +956,21 @@
       if (sessionExtendTimer) {
         clearTimeout(sessionExtendTimer);
       }
-      
-      // Продлеваем сессию при каждом действии пользователя
       extendSession();
-      
-      // Устанавливаем таймер на проверку через 30 минут
       sessionExtendTimer = setTimeout(() => {
         checkSession();
-      }, 30 * 60 * 1000); // 30 минут
+      }, 30 * 60 * 1000);
     }
 
-    // События для продления сессии
     document.addEventListener('click', resetSessionTimer);
     document.addEventListener('keydown', resetSessionTimer);
     document.addEventListener('scroll', resetSessionTimer);
     document.addEventListener('mousemove', resetSessionTimer);
 
-    // Периодическая проверка сессии каждые 5 минут
     setInterval(() => {
       checkSession();
-    }, 5 * 60 * 1000); // 5 минут
+    }, 5 * 60 * 1000);
 
-    // Обновление сессии при переходе на другую вкладку
     document.addEventListener('visibilitychange', function() {
       if (!document.hidden) {
         checkSession();
