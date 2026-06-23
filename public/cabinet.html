@@ -602,28 +602,23 @@
   </footer>
 
   <script>
-    // Ключ для хранения данных пользователя
+    // Ключ для хранения данных пользователя (только user, без времени)
     const USER_STORAGE_KEY = 'user';
-    const SESSION_EXPIRY_KEY = 'session_expiry';
-    const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 часа
 
     // Проверка сессии при загрузке страницы
     document.addEventListener('DOMContentLoaded', function() {
       checkSession();
     });
 
-    // Проверка валидности сессии
+    // Проверка валидности сессии (БЕЗ ПРОВЕРКИ ВРЕМЕНИ)
     function checkSession() {
       const userData = localStorage.getItem(USER_STORAGE_KEY);
-     
       
       // Если нет данных пользователя - перенаправляем на вход
       if (!userData) {
         redirectToLogin();
         return;
       }
-
-     
 
       try {
         const user = JSON.parse(userData);
@@ -636,16 +631,10 @@
       }
     }
 
-    // Продление сессии (обновление времени истечения)
-    function extendSession() {
-      const expiryTime = Date.now() + SESSION_DURATION;
-      localStorage.setItem(SESSION_EXPIRY_KEY, expiryTime.toString());
-    }
-
-    // Очистка сессии
+    // Очистка сессии (удаляем только user)
     function clearSession() {
       localStorage.removeItem(USER_STORAGE_KEY);
-      localStorage.removeItem(SESSION_EXPIRY_KEY);
+      // session_expiry больше не используется
     }
 
     // Перенаправление на страницу входа
@@ -801,52 +790,49 @@
       }
     });
 
-    
     // Функция отмены бронирования
-async function cancelBooking(bookingId, button) {
-  if (!confirm('Вы уверены, что хотите отменить это бронирование?')) {
-    return;
-  }
-
-  button.disabled = true;
-  button.textContent = 'Отмена...';
-
-  try {
-    // Меняем URL на /api/delete-booking
-    const response = await fetch('/api/delete-booking', {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        id: bookingId
-      })
-    });
-
-    const result = await response.json();
-
-    if (result.success) {
-      alert('Бронирование успешно отменено!');
-      // Перезагружаем список бронирований
-      const userData = localStorage.getItem(USER_STORAGE_KEY);
-      if (userData) {
-        const user = JSON.parse(userData);
-        loadUserBookings(user.email);
+    async function cancelBooking(bookingId, button) {
+      if (!confirm('Вы уверены, что хотите отменить это бронирование?')) {
+        return;
       }
-    } else {
-      alert(result.error || 'Ошибка при отмене бронирования');
-      button.disabled = false;
-      button.textContent = 'Отменить';
-    }
-  } catch (error) {
-    console.error('Error cancelling booking:', error);
-    alert('Ошибка соединения. Попробуйте позже.');
-    button.disabled = false;
-    button.textContent = 'Отменить';
-  }
-}
 
-    
+      button.disabled = true;
+      button.textContent = 'Отмена...';
+
+      try {
+        const response = await fetch('/api/delete-booking', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: bookingId
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          alert('Бронирование успешно отменено!');
+          // Перезагружаем список бронирований
+          const userData = localStorage.getItem(USER_STORAGE_KEY);
+          if (userData) {
+            const user = JSON.parse(userData);
+            loadUserBookings(user.email);
+          }
+        } else {
+          alert(result.error || 'Ошибка при отмене бронирования');
+          button.disabled = false;
+          button.textContent = 'Отменить';
+        }
+      } catch (error) {
+        console.error('Error cancelling booking:', error);
+        alert('Ошибка соединения. Попробуйте позже.');
+        button.disabled = false;
+        button.textContent = 'Отменить';
+      }
+    }
+
     // Отображение бронирований (с кнопками вместо статуса и ID)
     function renderBookings(bookings) {
       const bookingsList = document.getElementById('bookingsList');
@@ -933,14 +919,13 @@ async function cancelBooking(bookingId, button) {
       document.getElementById('completedCount').textContent = completed;
     }
 
-    // Выход из аккаунта
+    // Выход из аккаунта (только по кнопке)
     document.getElementById('logoutBtn').addEventListener('click', function() {
       if (confirm('Вы уверены, что хотите выйти из аккаунта?')) {
         clearSession();
         window.location.href = 'login.html';
       }
     });
-
   </script>
 </body>
 </html>
