@@ -408,7 +408,7 @@
       </div>
     </a>
     <div class="header-actions">
-      <span class="user-greeting">👋 Здравствуйте, <strong id="userNameDisplay">Гость</strong></span>
+      <span class="user-greeting">Здравствуйте, <strong id="userNameDisplay">Гость</strong></span>
       <button class="logout-btn" id="logoutBtn">Выйти</button>
     </div>
   </header>
@@ -426,7 +426,7 @@
         <div class="profile-email" id="userEmailDisplay">ivan@example.com</div>
         <div class="profile-phone" id="userPhoneDisplay">+375 29 123 45 67</div>
       </div>
-      <div class="profile-status">✅ Активен</div>
+      <div class="profile-status">Активен</div>
     </div>
 
     <!-- Stats -->
@@ -446,7 +446,7 @@
     </div>
 
     <!-- Bookings -->
-    <h2 class="section-title">📋 Мои бронирования</h2>
+    <h2 class="section-title">Мои бронирования</h2>
     <div class="bookings-list" id="bookingsList">
       <div class="loading-state">
         <div class="spinner"></div>
@@ -624,7 +624,7 @@
       }
     }
 
-    // Отображение бронирований (теперь с датой и названием тура)
+    // Отображение бронирований (с датой и названием тура)
     function renderBookings(bookings) {
       const bookingsList = document.getElementById('bookingsList');
       
@@ -684,8 +684,8 @@
         return `
           <div class="booking-item">
             <div class="booking-info">
-              <div class="booking-tour">🌍 ${tourName}</div>
-              <div class="booking-date">📅 ${formattedDate}</div>
+              <div class="booking-tour">Тур:${tourName}</div>
+              <div class="booking-date">Дата:${formattedDate}</div>
               ${comment ? `<div class="booking-comment">💬 ${comment}</div>` : ''}
             </div>
             <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
