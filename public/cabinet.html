@@ -208,19 +208,46 @@
     .booking-item:last-child {
       border-bottom: none;
     }
-    .booking-info .booking-name {
+    .booking-info .booking-tour {
       font-weight: 500;
       font-size: 16px;
     }
-    .booking-info .booking-phone {
+    .booking-info .booking-date {
       font-size: 14px;
       color: var(--muted);
       margin-top: 2px;
     }
-    .booking-info .booking-email {
-      font-size: 14px;
+    .booking-info .booking-comment {
+      font-size: 13px;
       color: var(--muted);
       margin-top: 2px;
+      font-style: italic;
+    }
+    .booking-status {
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .booking-status.confirmed {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+    .booking-status.pending {
+      background: #fff3e0;
+      color: #e65100;
+    }
+    .booking-status.completed {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    .booking-status.cancelled {
+      background: #ffebee;
+      color: #c62828;
+    }
+    .booking-status.new {
+      background: #f3e5f5;
+      color: #7b1fa2;
     }
     .booking-id {
       padding: 4px 14px;
@@ -597,7 +624,7 @@
       }
     }
 
-    // Отображение бронирований
+    // Отображение бронирований (теперь с датой и названием тура)
     function renderBookings(bookings) {
       const bookingsList = document.getElementById('bookingsList');
       
@@ -612,25 +639,73 @@
         return;
       }
 
-      bookingsList.innerHTML = bookings.map(booking => `
-        <div class="booking-item">
-          <div class="booking-info">
-            <div class="booking-name">👤 ${booking.name || 'Имя не указано'}</div>
-            <div class="booking-phone">📱 ${booking.phone || 'Телефон не указан'}</div>
-            <div class="booking-email">✉️ ${booking.email || 'Email не указан'}</div>
+      // Маппинг статусов на русский язык
+      const statusMap = {
+        'new': 'Новое',
+        'confirmed': 'Подтверждено',
+        'pending': 'Ожидает',
+        'completed': 'Завершён',
+        'cancelled': 'Отменён'
+      };
+
+      bookingsList.innerHTML = bookings.map(booking => {
+        // Извлекаем название тура из комментария
+        let tourName = 'Тур не указан';
+        let comment = booking.comment || '';
+        
+        // Если есть комментарий, пытаемся извлечь название тура
+        if (comment) {
+          const tourMatch = comment.match(/Тур:\s*(.+?)(?:\n|$)/);
+          if (tourMatch) {
+            tourName = tourMatch[1];
+            // Убираем название тура из комментария для отображения
+            comment = comment.replace(/Тур:\s*.+?(?:\n|$)/, '').trim();
+          }
+        }
+
+        // Форматируем дату
+        let formattedDate = 'Дата не указана';
+        if (booking.tour_date) {
+          try {
+            const date = new Date(booking.tour_date);
+            formattedDate = date.toLocaleDateString('ru-RU', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric'
+            });
+          } catch (e) {
+            formattedDate = booking.tour_date;
+          }
+        }
+
+        const status = booking.status || 'new';
+        const statusLabel = statusMap[status] || status;
+
+        return `
+          <div class="booking-item">
+            <div class="booking-info">
+              <div class="booking-tour">🌍 ${tourName}</div>
+              <div class="booking-date">📅 ${formattedDate}</div>
+              ${comment ? `<div class="booking-comment">💬 ${comment}</div>` : ''}
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <span class="booking-status ${status}">${statusLabel}</span>
+              <span class="booking-id">#${booking.id}</span>
+            </div>
           </div>
-          <span class="booking-id">#${booking.id}</span>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     // Обновление статистики
     function updateStats(bookings) {
       const total = bookings.length;
+      const active = bookings.filter(b => b.status === 'new' || b.status === 'confirmed' || b.status === 'pending').length;
+      const completed = bookings.filter(b => b.status === 'completed').length;
       
       document.getElementById('bookingCount').textContent = total;
-      document.getElementById('activeCount').textContent = total; // Все бронирования считаем активными
-      document.getElementById('completedCount').textContent = 0; // Пока нет статуса, ставим 0
+      document.getElementById('activeCount').textContent = active;
+      document.getElementById('completedCount').textContent = completed;
     }
 
     // Выход из аккаунта
