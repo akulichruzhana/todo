@@ -396,14 +396,14 @@
       color: var(--primary);
     }
     .auth-info {
-      background: #e8f5e9;
-      border: 1px solid #2e7d32;
+      background: hsla(33, 50%, 95%, 0.7);;
+      border: 1px solid hsl(33, 50%, 95%);;
       border-radius: 8px;
       padding: 10px 16px;
       margin-bottom: 1rem;
       text-align: center;
       font-size: 0.9rem;
-      color: #2e7d32;
+      color: hsl(33, 50%, 95%);;
       display: none;
     }
     .auth-info .user-email {
@@ -727,8 +727,8 @@
 
         <!-- Информация об авторизованном пользователе -->
         <div id="authInfo" class="auth-info">
-          ✅ Вы авторизованы как <span class="user-email" id="authUserEmail">user@example.com</span>
-          <br><span style="font-size: 0.85rem;">Данные из профиля уже подставлены, вы можете их изменить при необходимости</span>
+          Вы авторизованы как <span class="user-email" id="authUserEmail">user@example.com</span>
+          <br><span style="font-size: 0.85rem;">При необходимости можете изменить внесенные данные</span>
         </div>
         
         <div class="form-row">
@@ -736,7 +736,7 @@
           <input type="tel" id="userPhone" placeholder="Телефон" required>
           <input type="email" id="userEmail" placeholder="E-mail" required>
         </div>
-        <textarea rows="4" id="userComment" placeholder="Комментарий (дополнительные пожелания)"></textarea>
+        <textarea rows="4" id="userComment" placeholder="Комментарий.."></textarea>
         <div class="form-actions">
           <button type="submit" class="submit-btn" id="submitBtn">Отправить заявку</button>
           <label class="consent">
