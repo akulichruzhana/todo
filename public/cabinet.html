@@ -889,15 +889,15 @@
           // Для активных бронирований показываем кнопки
           actionsHTML = `
             <button class="btn-action cancel" onclick="cancelBooking(${booking.id}, this)">✕ Отменить</button>
-            <button class="btn-action guide" onclick="openGuideModal('${tourName}')">Подробнее о гиде</button>
+            <button class="btn-action guide" onclick="openGuideModal('${tourName}')">Гид</button>
           `;
         }
 
         return `
           <div class="booking-item">
             <div class="booking-info">
-              <div class="booking-tour">Название тура: ${tourName}</div>
-              <div class="booking-date">Дата: ${formattedDate}</div>
+              <div class="booking-tour"> ${tourName}</div>
+              <div class="booking-date"> ${formattedDate}</div>
               ${comment ? `<div class="booking-comment">${comment}</div>` : ''}
             </div>
             <div class="booking-actions">
