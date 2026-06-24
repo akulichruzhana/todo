@@ -363,6 +363,7 @@
     .contact h2 { text-align: center; font-size: clamp(1.5rem, 2.5vw, 1.875rem); font-weight: 700; margin-bottom: 2.5rem; }
     .contact-form { max-width: 800px; margin: 0 auto; }
     .form-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+    .form-row .hidden { display: none; }
     .contact-form input, .contact-form textarea {
       width: 100%; background: var(--bg); border: 1px solid var(--border);
       border-radius: 0.25rem; padding: 0.75rem 1rem; font-size: 0.875rem;
@@ -394,6 +395,20 @@
     }
     .selected-tour-info strong {
       color: var(--primary);
+    }
+    .auth-info {
+      background: #e3f2fd;
+      border: 1px solid #1565c0;
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin-bottom: 1rem;
+      text-align: center;
+      font-size: 0.95rem;
+      color: #1565c0;
+      display: none;
+    }
+    .auth-info .user-email {
+      font-weight: 600;
     }
     /* ===== FOOTER ===== */
     .footer { background: var(--footer-bg); color: var(--footer-fg); padding: 4rem 0; }
@@ -710,6 +725,12 @@
           Выбран тур: <strong id="selectedTourName">—</strong> 
           (<span id="selectedTourDate">—</span>)
         </div>
+
+        <!-- Информация об авторизованном пользователе -->
+        <div id="authInfo" class="auth-info">
+          👤 Вы авторизованы как <span class="user-email" id="authUserEmail">user@example.com</span>
+          <br><span style="font-size: 0.85rem;">Для бронирования достаточно указать комментарий</span>
+        </div>
         
         <div class="form-row">
           <input type="text" id="userName" placeholder="Ваше имя" required>
@@ -769,13 +790,13 @@
     document.addEventListener('DOMContentLoaded', function() {
       checkAuth();
       updateHeaderButton();
+      updateBookingForm();
     });
 
     // Проверка авторизации
     function checkAuth() {
       const userData = localStorage.getItem(USER_STORAGE_KEY);
       
-      // Если есть данные пользователя - он авторизован
       if (userData) {
         try {
           const user = JSON.parse(userData);
@@ -808,7 +829,6 @@
       const user = getUserData();
       
       if (user) {
-        // Пользователь авторизован - показываем иконку кабинета
         authLink.href = 'cabinet.html';
         authBtn.innerHTML = `
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;">
@@ -818,7 +838,6 @@
         `;
         authBtn.style.borderColor = 'var(--primary)';
       } else {
-        // Пользователь не авторизован - показываем иконку входа
         authLink.href = 'login.html';
         authBtn.innerHTML = `
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -830,21 +849,54 @@
       }
     }
 
-    // ============================================
-    // КОД ДЛЯ СТРАНИЦЫ ВХОДА (login.html)
-    // Этот код должен быть на странице login.html
-    // ============================================
-    // При успешном входе сохраняем данные пользователя БЕЗ СРОКА ДЕЙСТВИЯ
-    // localStorage.setItem('user', JSON.stringify(userData));
-    // Затем перенаправляем на главную:
-    // window.location.href = 'index.html';
+    // Обновление формы бронирования в зависимости от авторизации
+    function updateBookingForm() {
+      const user = getUserData();
+      const nameInput = document.getElementById('userName');
+      const emailInput = document.getElementById('userEmail');
+      const phoneInput = document.getElementById('userPhone');
+      const authInfo = document.getElementById('authInfo');
+      const authUserEmail = document.getElementById('authUserEmail');
 
-    // ============================================
-    // КОД ДЛЯ ВЫХОДА (на странице cabinet.html)
-    // ============================================
-    // При нажатии на кнопку "Выйти":
-    // localStorage.removeItem('user');
-    // window.location.href = 'index.html';
+      if (user) {
+        // Пользователь авторизован
+        // Скрываем поля имени, email и телефон
+        nameInput.closest('.form-row').querySelectorAll('input').forEach(input => {
+          if (input.id === 'userName' || input.id === 'userEmail') {
+            input.style.display = 'none';
+            input.removeAttribute('required');
+          }
+          if (input.id === 'userPhone') {
+            input.placeholder = 'Телефон (если нужно указать другой)';
+            input.required = false;
+          }
+        });
+
+        // Показываем информацию об авторизации
+        authInfo.style.display = 'block';
+        authUserEmail.textContent = user.email || 'user@example.com';
+
+        // Заполняем скрытые поля данными пользователя
+        nameInput.value = user.name || '';
+        emailInput.value = user.email || '';
+        // Телефон оставляем пустым, чтобы пользователь мог ввести другой
+
+      } else {
+        // Пользователь не авторизован
+        // Показываем все поля и делаем их обязательными
+        nameInput.closest('.form-row').querySelectorAll('input').forEach(input => {
+          input.style.display = 'block';
+          input.required = true;
+        });
+        phoneInput.placeholder = 'Телефон';
+        authInfo.style.display = 'none';
+        
+        // Очищаем поля
+        nameInput.value = '';
+        emailInput.value = '';
+        phoneInput.value = '';
+      }
+    }
 
     // ============================================
     // Переменные для выбора тура
@@ -884,9 +936,10 @@
     async function submitBooking(event) {
       event.preventDefault();
       
-      const name = document.getElementById('userName').value.trim();
-      const phone = document.getElementById('userPhone').value.trim();
-      const email = document.getElementById('userEmail').value.trim();
+      const user = getUserData();
+      const nameInput = document.getElementById('userName');
+      const phoneInput = document.getElementById('userPhone');
+      const emailInput = document.getElementById('userEmail');
       const comment = document.getElementById('userComment').value.trim();
       const consent = document.getElementById('consentCheckbox').checked;
       const submitBtn = document.getElementById('submitBtn');
@@ -898,11 +951,35 @@
         formMessage.textContent = 'Пожалуйста, дайте согласие на обработку персональных данных';
         return;
       }
-      
-      if (!name || !phone || !email) {
+
+      // Определяем, какие данные отправлять
+      let name, phone, email;
+
+      if (user) {
+        // Авторизованный пользователь - берём имя и email из профиля, телефон из формы (если введён)
+        name = user.name || '';
+        email = user.email || '';
+        phone = phoneInput.value.trim() || user.phone || '';
+      } else {
+        // Неавторизованный пользователь - все поля обязательны
+        name = nameInput.value.trim();
+        phone = phoneInput.value.trim();
+        email = emailInput.value.trim();
+      }
+
+      // Проверка обязательных полей для неавторизованных
+      if (!user && (!name || !phone || !email)) {
         formMessage.style.display = 'block';
         formMessage.style.color = 'red';
         formMessage.textContent = 'Пожалуйста, заполните имя, телефон и email';
+        return;
+      }
+
+      // Для авторизованных проверяем только наличие имени и email (они должны быть в профиле)
+      if (user && (!name || !email)) {
+        formMessage.style.display = 'block';
+        formMessage.style.color = 'red';
+        formMessage.textContent = 'Ошибка: данные профиля не найдены. Пожалуйста, выйдите и зайдите заново.';
         return;
       }
 
@@ -959,6 +1036,9 @@
           selectedTour = null;
           selectedTourName = '';
           selectedTourDate = '';
+
+          // Восстанавливаем форму в зависимости от авторизации
+          updateBookingForm();
         } else {
           formMessage.style.color = 'red';
           formMessage.textContent = result.error || 'Ошибка при отправке. Попробуйте ещё раз.';
