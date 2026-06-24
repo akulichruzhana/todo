@@ -416,10 +416,31 @@
     
     .footer-logo-text { font-weight: 700; letter-spacing: 2px; font-size: 0.875rem; font-family: var(--font-display); }
     .footer-logo-sub { color: rgba(204,204,204,0.6); font-size: 0.75rem; }
-    .footer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; font-size: 0.875rem; color: rgba(204,204,204,0.7); }
-    .footer-grid .label { font-weight: 500; color: var(--footer-fg); margin-bottom: 0.25rem; }
-    .footer-grid a { text-decoration: underline; }
-    .footer-grid a:hover { color: var(--footer-fg); }
+    .footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  font-size: 0.875rem;
+  color: rgba(204,204,204,0.7);
+}
+.footer-grid .label {
+  font-weight: 500;
+  color: var(--footer-fg);
+  margin-bottom: 0.75rem;
+}
+.footer-grid a {
+  color: rgba(204,204,204,0.7);
+  text-decoration: none;
+  transition: color 0.2s;
+  line-height: 1.8;
+}
+.footer-grid a:hover {
+  color: var(--footer-fg);
+}
+.footer-grid p {
+  line-height: 1.8;
+  margin: 0;
+}
     /* ===== RESPONSIVE ===== */
     @media (max-width: 768px) {
       .header-nav, .header-phone { display: none; }
@@ -749,7 +770,7 @@
     </div>
   </section>
   
-  <!-- FOOTER -->
+    <!-- FOOTER -->
   <footer class="footer">
     <div class="container">
       <div class="footer-logo">
@@ -762,20 +783,35 @@
         </div>
       </div>
       <div class="footer-grid">
+        <!-- Столбец 1: Меню -->
         <div>
-          <p class="label">ЧУП "Вандралюбы"</p>
+          
+          <a href="#">Главная</a><br>
+          <a href="about.html">Вандралюбы</a><br>
+          <a href="catalog.html">Каталог</a><br>
+          <a href="travelers.html">Туристам</a><br>
+          <a href="contacts.html">Контакты</a>
+          <a href="login.html">Вход в личный кабинет</a>
+        </div>
+        <!-- Столбец 2: Контакты -->
+        <div>
+          <p class="label">Свяжитесь с нами</p>
+          <a href="tel:+375292451770">тел. +375 29 245 17 70</a><br>
+          <a href="mailto:vandraluby@gmail.com">e-mail: vandraluby@gmail.com</a>
+        </div>
+        <!-- Столбец 3: Адрес и график работы -->
+        <div>
+          <p class="label">Адрес</p>
+          <a href="https://maps.google.com/maps?q=%D0%B3.+%D0%9C%D0%B8%D0%BD%D1%81%D0%BA,+%D1%83%D0%BB.+%D0%9B%D0%B5%D0%BD%D0%B8%D0%BD%D0%B0,+15" target="_blank">г. Минск, ул. Ленина, 15</a><br>
+          <a href="https://maps.google.com/maps?q=%D0%B3.+%D0%9C%D0%B8%D0%BD%D1%81%D0%BA,+%D1%83%D0%BB.+%D0%A0%D0%B0%D1%82%D0%BE%D0%BC%D1%81%D0%BA%D0%B0%D1%8F,+7" target="_blank">г. Минск, ул. Ратомская, 7</a>
+          <p style="margin-top: 8px; color: rgba(204,204,204,0.6); font-size: 0.8rem;">🕐 График работы:<br>Пн–Пт: 10:00 – 18:00</p>
+        </div>
+        <!-- Столбец 4: О компании -->
+        <div>
+          <p class="label">О компании</p>
+          <p>ЧУП «Вандралюбы»</p>
           <p>© 2026. Все права защищены</p>
           <a href="#">Политика конфиденциальности</a>
-        </div>
-        <div>
-          <p class="label">Адрес:</p>
-          <p>г. Минск, ул. Ленина, 15</p>
-          <p>г. Минск, ул. Ратомская, 7</p>
-        </div>
-        <div>
-          <p class="label">Заказ туров и бронирование:</p>
-          <p>тел. +375 29 245 17 70</p>
-          <p>e-mail: vandraluby@gmail.com</p>
         </div>
       </div>
     </div>
