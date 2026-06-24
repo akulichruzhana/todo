@@ -363,7 +363,6 @@
     .contact h2 { text-align: center; font-size: clamp(1.5rem, 2.5vw, 1.875rem); font-weight: 700; margin-bottom: 2.5rem; }
     .contact-form { max-width: 800px; margin: 0 auto; }
     .form-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
-    .form-row .hidden { display: none; }
     .contact-form input, .contact-form textarea {
       width: 100%; background: var(--bg); border: 1px solid var(--border);
       border-radius: 0.25rem; padding: 0.75rem 1rem; font-size: 0.875rem;
@@ -397,14 +396,14 @@
       color: var(--primary);
     }
     .auth-info {
-      background: #e3f2fd;
-      border: 1px solid #1565c0;
+      background: #e8f5e9;
+      border: 1px solid #2e7d32;
       border-radius: 8px;
-      padding: 12px 20px;
+      padding: 10px 16px;
       margin-bottom: 1rem;
       text-align: center;
-      font-size: 0.95rem;
-      color: #1565c0;
+      font-size: 0.9rem;
+      color: #2e7d32;
       display: none;
     }
     .auth-info .user-email {
@@ -728,8 +727,8 @@
 
         <!-- Информация об авторизованном пользователе -->
         <div id="authInfo" class="auth-info">
-          Вы авторизованы как <span class="user-email" id="authUserEmail">user@example.com</span>
-          <br><span style="font-size: 0.85rem;">При необходимости укажите ваши пожелания</span>
+          ✅ Вы авторизованы как <span class="user-email" id="authUserEmail">user@example.com</span>
+          <br><span style="font-size: 0.85rem;">Данные из профиля уже подставлены, вы можете их изменить при необходимости</span>
         </div>
         
         <div class="form-row">
@@ -737,7 +736,7 @@
           <input type="tel" id="userPhone" placeholder="Телефон" required>
           <input type="email" id="userEmail" placeholder="E-mail" required>
         </div>
-        <textarea rows="4" id="userComment" placeholder="Комментарий.."></textarea>
+        <textarea rows="4" id="userComment" placeholder="Комментарий (дополнительные пожелания)"></textarea>
         <div class="form-actions">
           <button type="submit" class="submit-btn" id="submitBtn">Отправить заявку</button>
           <label class="consent">
@@ -853,48 +852,59 @@
     function updateBookingForm() {
       const user = getUserData();
       const nameInput = document.getElementById('userName');
-      const emailInput = document.getElementById('userEmail');
       const phoneInput = document.getElementById('userPhone');
+      const emailInput = document.getElementById('userEmail');
       const authInfo = document.getElementById('authInfo');
       const authUserEmail = document.getElementById('authUserEmail');
 
       if (user) {
-        // Пользователь авторизован
-        // Скрываем поля имени, email и телефон
-        nameInput.closest('.form-row').querySelectorAll('input').forEach(input => {
-          if (input.id === 'userName' || input.id === 'userEmail') {
-            input.style.display = 'none';
-            input.removeAttribute('required');
-          }
-          if (input.id === 'userPhone') {
-            input.placeholder = 'Номер телефона';
-            input.required = false;
-          }
-        });
-
-        // Показываем информацию об авторизации
+        // Пользователь авторизован — заполняем поля данными из профиля
         authInfo.style.display = 'block';
         authUserEmail.textContent = user.email || 'user@example.com';
-
-        // Заполняем скрытые поля данными пользователя
+        
+        // Заполняем поля данными из профиля
         nameInput.value = user.name || '';
         emailInput.value = user.email || '';
-        // Телефон оставляем пустым, чтобы пользователь мог ввести другой
+        // Телефон заполняем, если есть в профиле, иначе оставляем пустым
+        phoneInput.value = user.phone || '';
+        
+        // Делаем поля редактируемыми
+        nameInput.readOnly = false;
+        emailInput.readOnly = false;
+        phoneInput.readOnly = false;
+        
+        // Добавляем подсказку, что можно изменить
+        nameInput.placeholder = 'Ваше имя (можно изменить)';
+        emailInput.placeholder = 'E-mail (можно изменить)';
+        phoneInput.placeholder = 'Телефон (можно изменить)';
+        
+        // Делаем поля обязательными для заполнения
+        nameInput.required = true;
+        emailInput.required = true;
+        phoneInput.required = true;
 
       } else {
         // Пользователь не авторизован
-        // Показываем все поля и делаем их обязательными
-        nameInput.closest('.form-row').querySelectorAll('input').forEach(input => {
-          input.style.display = 'block';
-          input.required = true;
-        });
-        phoneInput.placeholder = 'Телефон';
         authInfo.style.display = 'none';
         
         // Очищаем поля
         nameInput.value = '';
         emailInput.value = '';
         phoneInput.value = '';
+        
+        // Восстанавливаем стандартные плейсхолдеры
+        nameInput.placeholder = 'Ваше имя';
+        emailInput.placeholder = 'E-mail';
+        phoneInput.placeholder = 'Телефон';
+        
+        // Делаем поля обязательными
+        nameInput.required = true;
+        emailInput.required = true;
+        phoneInput.required = true;
+        
+        nameInput.readOnly = false;
+        emailInput.readOnly = false;
+        phoneInput.readOnly = false;
       }
     }
 
@@ -936,10 +946,9 @@
     async function submitBooking(event) {
       event.preventDefault();
       
-      const user = getUserData();
-      const nameInput = document.getElementById('userName');
-      const phoneInput = document.getElementById('userPhone');
-      const emailInput = document.getElementById('userEmail');
+      const name = document.getElementById('userName').value.trim();
+      const phone = document.getElementById('userPhone').value.trim();
+      const email = document.getElementById('userEmail').value.trim();
       const comment = document.getElementById('userComment').value.trim();
       const consent = document.getElementById('consentCheckbox').checked;
       const submitBtn = document.getElementById('submitBtn');
@@ -951,35 +960,11 @@
         formMessage.textContent = 'Пожалуйста, дайте согласие на обработку персональных данных';
         return;
       }
-
-      // Определяем, какие данные отправлять
-      let name, phone, email;
-
-      if (user) {
-        // Авторизованный пользователь - берём имя и email из профиля, телефон из формы (если введён)
-        name = user.name || '';
-        email = user.email || '';
-        phone = phoneInput.value.trim() || user.phone || '';
-      } else {
-        // Неавторизованный пользователь - все поля обязательны
-        name = nameInput.value.trim();
-        phone = phoneInput.value.trim();
-        email = emailInput.value.trim();
-      }
-
-      // Проверка обязательных полей для неавторизованных
-      if (!user && (!name || !phone || !email)) {
+      
+      if (!name || !phone || !email) {
         formMessage.style.display = 'block';
         formMessage.style.color = 'red';
         formMessage.textContent = 'Пожалуйста, заполните имя, телефон и email';
-        return;
-      }
-
-      // Для авторизованных проверяем только наличие имени и email (они должны быть в профиле)
-      if (user && (!name || !email)) {
-        formMessage.style.display = 'block';
-        formMessage.style.color = 'red';
-        formMessage.textContent = 'Ошибка: данные профиля не найдены. Пожалуйста, выйдите и зайдите заново.';
         return;
       }
 
